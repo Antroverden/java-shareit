@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.storage.ItemStorage;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,19 +21,24 @@ public class ItemServiceImpl implements ItemService {
 
     ItemStorage itemStorage;
     ItemMapper itemMapper;
+    UserStorage userStorage;
 
     @Override
     public ItemDto addItem(ItemDto itemDto, int ownerId) {
+        if (userStorage.getUserById(ownerId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Юзера с таким айди не существует");
+        }
         itemDto.setOwnerId(ownerId);
         return itemMapper.apply(itemStorage.addItem(itemMapper.toItem(itemDto)));
     }
 
     @Override
     public ItemDto updateItem(int id, ItemDto itemDto, int ownerId) {
+        itemDto.setId(id);
+        itemDto.setOwnerId(ownerId);
         if (itemStorage.getItemById(id).getOwnerId() != ownerId) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Данный юзер не является владельцем данной вещи");
         }
-        itemDto.setId(id);
         return itemMapper.apply(itemStorage.updateItem(itemMapper.toItem(itemDto)));
     }
 
@@ -54,8 +60,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItems(String text) {
+        if (text.isBlank()) return List.of();
         return itemStorage.getItems().stream()
-                .filter(item -> (item.getName().contains(text) || item.getDescription().contains(text)))
+                .filter(item -> ((item.getName().toLowerCase().contains(text.toLowerCase())
+                        || item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable()))
                 .map(itemMapper).collect(Collectors.toList());
     }
 }

@@ -22,8 +22,16 @@ public class ItemDao implements ItemStorage {
 
     @Override
     public Item updateItem(Item item) {
-        items.put(item.getId(), item);
-        return item;
+        if (item.getName() != null) {
+            items.get(item.getId()).setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            items.get(item.getId()).setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            items.get(item.getId()).setAvailable(item.getAvailable());
+        }
+        return items.get(item.getId());
     }
 
     @Override

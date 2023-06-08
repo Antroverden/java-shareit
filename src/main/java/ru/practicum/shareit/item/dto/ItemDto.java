@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Data
@@ -17,7 +18,7 @@ public class ItemDto {
     String name;
     @NotBlank
     String description;
-    @NotBlank
+    @NotNull
     Boolean available;
     int ownerId;
     ItemRequest itemRequest;
