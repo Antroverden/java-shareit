@@ -10,12 +10,12 @@ import java.util.function.Function;
 public class ItemMapper implements Function<Item, ItemDto> {
     @Override
     public ItemDto apply(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), item.getOwner(),
+        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), item.getOwnerId(),
                 item.getItemRequest());
     }
 
     public Item toItem(ItemDto itemDto) {
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
-                itemDto.getOwner(), itemDto.getItemRequest());
+                itemDto.getOwnerId(), itemDto.getItemRequest());
     }
 }

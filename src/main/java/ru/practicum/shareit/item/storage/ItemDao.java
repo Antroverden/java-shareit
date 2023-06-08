@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Repository
-public class ItemDao {
+public class ItemDao implements ItemStorage {
 
     private final HashMap<Integer, Item> items = new HashMap<>();
     private int id = 0;

@@ -6,14 +6,19 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.shareit.request.ItemRequest;
 
+import javax.validation.constraints.NotBlank;
+
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ItemDto {
     int id;
+    @NotBlank
     String name;
+    @NotBlank
     String description;
+    @NotBlank
     Boolean available;
-    String owner;
+    int ownerId;
     ItemRequest itemRequest;
 }

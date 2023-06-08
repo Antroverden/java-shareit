@@ -20,27 +20,33 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItem(@RequestBody ItemDto itemDto) {
-        return itemService.addItem(itemDto);
+    public ItemDto addItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.addItem(itemDto, ownerId);
     }
 
-    @PatchMapping("/{id}")
-    public ItemDto updateItem(@PathVariable int id, @RequestBody ItemDto itemDto) {
-        return itemService.updateItem(id, itemDto);
+    @PatchMapping("/{itemId}")
+    public ItemDto updateItem(@PathVariable int itemId, @RequestBody ItemDto itemDto,
+                              @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.updateItem(itemId, itemDto, ownerId);
     }
 
-    @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable int id) {
-        return itemService.getItemById(id);
+    @GetMapping("/{itemId}")
+    public ItemDto getItemById(@PathVariable int itemId) {
+        return itemService.getItemById(itemId);
     }
 
     @GetMapping
-    public List<ItemDto> getItems() {
-        return itemService.getItems();
+    public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return itemService.getItems(ownerId);
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteItem(@PathVariable int id) {
-        itemService.deleteItem(id);
+    @GetMapping("/search")
+    public List<ItemDto> searchItems(@RequestParam String text) {
+        return itemService.searchItems(text);
+    }
+
+    @DeleteMapping("/{itemId}")
+    public void deleteItem(@PathVariable int itemId) {
+        itemService.deleteItem(itemId);
     }
 }
