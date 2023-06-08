@@ -22,7 +22,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto addItem(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.addItem(itemDto, ownerId);
+        return itemService.addItemToUser(itemDto, ownerId);
     }
 
     @PatchMapping("/{itemId}")
