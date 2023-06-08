@@ -21,8 +21,13 @@ public class UserDao implements UserStorage {
 
     @Override
     public User updateUser(User user) {
-        users.put(user.getId(), user);
-        return user;
+        if (user.getEmail() != null) {
+            users.get(user.getId()).setEmail(user.getEmail());
+        }
+        if (user.getName() != null) {
+            users.get(user.getId()).setName(user.getName());
+        }
+        return users.get(user.getId());
     }
 
     @Override
