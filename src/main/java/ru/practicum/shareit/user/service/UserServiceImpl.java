@@ -6,12 +6,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -19,34 +17,34 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     UserStorage userStorage;
-    UserMapper userMapper;
 
     @Override
-    public UserDto addUser(UserDto userDto) {
-        if (userStorage.getUsers().stream().anyMatch(user -> user.getEmail().equals(userDto.getEmail()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Юзер с таким имейлом уже существует");
+    public User addUser(User user) {
+        if (userStorage.getUsers().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Юзер с имейлом " + user.getEmail() + "уже существует");
         }
-        return userMapper.apply(userStorage.addUser(userMapper.toUser(userDto)));
+        return userStorage.addUser(user);
     }
 
     @Override
-    public UserDto updateUser(int id, UserDto userDto) {
-        userDto.setId(id);
+    public User updateUser(User user) {
         if (userStorage.getUsers().stream()
-                .anyMatch(user -> (user.getEmail().equals(userDto.getEmail()) && user.getId() != userDto.getId()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Юзер с таким имейлом уже существует");
+                .anyMatch(u -> (u.getEmail().equals(user.getEmail()) && u.getId() != user.getId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Юзер с имейлом " + user.getEmail() + "уже существует");
         }
-        return userMapper.apply(userStorage.updateUser((userMapper.toUser(userDto))));
+        return userStorage.updateUser(user);
     }
 
     @Override
-    public UserDto getUserById(int id) {
-        return userMapper.apply(userStorage.getUserById(id));
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
     }
 
     @Override
-    public List<UserDto> getUsers() {
-        return userStorage.getUsers().stream().map(userMapper).collect(Collectors.toList());
+    public List<User> getUsers() {
+        return userStorage.getUsers();
     }
 
     @Override

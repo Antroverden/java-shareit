@@ -6,8 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.user.storage.UserStorage;
 
@@ -20,36 +19,34 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     ItemStorage itemStorage;
-    ItemMapper itemMapper;
     UserStorage userStorage;
 
     @Override
-    public ItemDto addItemToUser(ItemDto itemDto, int ownerId) {
-        if (userStorage.getUserById(ownerId) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Юзера с айди " + ownerId + "не существует");
+    public Item addItemToUser(Item item) {
+        if (userStorage.getUserById(item.getOwnerId()) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Юзера с айди " + item.getOwnerId() + "не существует");
         }
-        itemDto.setOwnerId(ownerId);
-        return itemMapper.toDto(itemStorage.addItem(itemMapper.toItem(itemDto)));
+        return itemStorage.addItem(item);
     }
 
     @Override
-    public ItemDto updateItem(int id, ItemDto itemDto, int ownerId) {
-        itemDto.setId(id);
-        itemDto.setOwnerId(ownerId);
-        if (itemStorage.getItemById(id).getOwnerId() != ownerId) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Данный юзер не является владельцем данной вещи");
+    public Item updateItem(Item item) {
+        if (itemStorage.getItemById(item.getId()).getOwnerId() != item.getOwnerId()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "Юзер с айди " + item.getOwnerId() + "не является владельцем данной вещи");
         }
-        return itemMapper.toDto(itemStorage.updateItem(itemMapper.toItem(itemDto)));
+        return itemStorage.updateItem(item);
     }
 
     @Override
-    public ItemDto getItemById(int id) {
-        return itemMapper.toDto(itemStorage.getItemById(id));
+    public Item getItemById(int id) {
+        return itemStorage.getItemById(id);
     }
 
     @Override
-    public List<ItemDto> getItems(int ownerId) {
-        return itemStorage.getItems().stream().filter(item -> item.getOwnerId() == ownerId).map(itemMapper::toDto)
+    public List<Item> getItems(int ownerId) {
+        return itemStorage.getItems().stream().filter(item -> item.getOwnerId() == ownerId)
                 .collect(Collectors.toList());
     }
 
@@ -59,11 +56,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(String text) {
+    public List<Item> searchItems(String text) {
         if (text.isBlank()) return List.of();
         return itemStorage.getItems().stream()
                 .filter(item -> ((item.getName().toLowerCase().contains(text.toLowerCase())
                         || item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable()))
-                .map(itemMapper::toDto).collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 }
