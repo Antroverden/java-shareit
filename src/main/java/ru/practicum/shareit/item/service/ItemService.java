@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.service;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public interface ItemService {
     Item addItemToUser(Item item);
