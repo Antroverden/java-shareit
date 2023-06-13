@@ -52,6 +52,13 @@ public class ItemController {
         return itemService.searchItems(text).stream().map(itemMapper::toDto).collect(Collectors.toList());
     }
 
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemDto addCommentToItem(@Valid @RequestBody ItemDto itemDto, @PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        itemDto.setOwnerId(ownerId);
+        return itemMapper.toDto(itemService.addItemToUser(itemMapper.toItem(itemDto)));
+    }
+
     @DeleteMapping("/{itemId}")
     public void deleteItem(@PathVariable int itemId) {
         itemService.deleteItem(itemId);
