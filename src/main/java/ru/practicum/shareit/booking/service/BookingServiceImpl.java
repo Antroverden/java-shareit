@@ -41,8 +41,7 @@ public class BookingServiceImpl {
     public Booking updateBooking(Booking booking) {
         Booking bookingFromDB = bookingRepository.findById(booking.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
-        Integer bookerId = bookingFromDB.getBooker().getId();
-        if (!(booking.getBooker().getId().equals(ownerId) || booking.getBooker().getId().equals(bookerId))) {
+        if (!(booking.getBooker().getId().equals(ownerId))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
@@ -50,10 +49,6 @@ public class BookingServiceImpl {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Юзер с айди " + ownerId + "уже одобрил бронирование данной вещи");
         }
-//        if (bookingFromDB.getStatus() == Booking.Status.APPROVED
-//                && bookingFromDB.getStart().isBefore(LocalDateTime.now()) && bookingFromDB.getEnd().isAfter(LocalDateTime.now())) {
-//
-//        }
         bookingFromDB.setStatus(booking.getStatus());
         return bookingRepository.save(bookingFromDB);
     }

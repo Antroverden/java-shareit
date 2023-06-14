@@ -12,8 +12,11 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
@@ -54,14 +57,16 @@ public class BookingController {
     public List<BookingDtoFull> getBookingInfoOfBooking(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int bookerId) {
-        return bookingService.getBookings(bookerId, state, false).stream().map(bookingMapper::toDtoFull).collect(Collectors.toList());
+        return Optional.ofNullable(bookingService.getBookings(bookerId, state, false)).stream().flatMap(Collection::stream)
+                .map(bookingMapper::toDtoFull).collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
     public List<BookingDtoFull> getBookingInfoOfItemsOfBooking(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return bookingService.getBookings(ownerId, state, true).stream().map(bookingMapper::toDtoFull).collect(Collectors.toList());
+        return Optional.ofNullable(bookingService.getBookings(ownerId, state, true)).stream().flatMap(Collection::stream)
+                .map(bookingMapper::toDtoFull).collect(Collectors.toList());
     }
 
     public enum State {

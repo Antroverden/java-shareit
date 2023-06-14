@@ -9,7 +9,6 @@ import ru.practicum.shareit.booking.Booking;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
