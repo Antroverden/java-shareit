@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.ItemStorage;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,47 +18,52 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ItemServiceImpl implements ItemService {
 
-    ItemStorage itemStorage;
-    UserStorage userStorage;
+    ItemRepository itemRepository;
+    UserRepository userRepository;
 
     @Override
     public Item addItemToUser(Item item) {
-        if (userStorage.getUserById(item.getOwnerId()) == null) {
+        Integer ownerId = item.getOwner().getId();
+        if (userRepository.existsById(ownerId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Юзера с айди " + item.getOwnerId() + "не существует");
+                    "Юзера с айди " + ownerId + "не существует");
         }
-        return itemStorage.addItem(item);
+        return itemRepository.save(item);
     }
 
     @Override
     public Item updateItem(Item item) {
-        if (itemStorage.getItemById(item.getId()).getOwnerId() != item.getOwnerId()) {
+        Integer ownerFromDBId = itemRepository.findById(item.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Айтема с айди " + item.getId() + "не существует")).getId();
+        Integer ownerId = item.getOwner().getId();
+        if (!ownerFromDBId.equals(ownerId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Юзер с айди " + item.getOwnerId() + "не является владельцем данной вещи");
+                    "Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
-        return itemStorage.updateItem(item);
+        return itemRepository.save(item);
     }
 
     @Override
     public Item getItemById(int id) {
-        return itemStorage.getItemById(id);
+        return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                "Айтема с айди " + id + "не существует"));
     }
 
     @Override
     public List<Item> getItems(int ownerId) {
-        return itemStorage.getItems().stream().filter(item -> item.getOwnerId() == ownerId)
+        return itemRepository.findAll().stream().filter(item -> item.getOwner().getId().equals(ownerId))
                 .collect(Collectors.toList());
     }
 
     @Override
     public void deleteItem(int id) {
-        itemStorage.deleteItem(id);
+        itemRepository.deleteById(id);
     }
 
     @Override
     public List<Item> searchItems(String text) {
         if (text.isBlank()) return List.of();
-        return itemStorage.getItems().stream()
+        return itemRepository.findAll().stream()
                 .filter(item -> ((item.getName().toLowerCase().contains(text.toLowerCase())
                         || item.getDescription().toLowerCase().contains(text.toLowerCase())) && item.getAvailable()))
                 .collect(Collectors.toList());

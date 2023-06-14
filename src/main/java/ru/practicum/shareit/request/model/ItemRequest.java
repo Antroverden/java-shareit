@@ -1,9 +1,6 @@
-package ru.practicum.shareit.item.model;
+package ru.practicum.shareit.request.model;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.user.model.User;
@@ -16,18 +13,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "comments")
-public class Comment {
+@Table(name = "requests")
+public class ItemRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
-    String text;
+    String description;
     @ManyToOne
-    @JoinColumn(name = "item_id")
-    Item item;
-    @ManyToOne
-    @JoinColumn(name = "author_id")
-    User author;
+    @JoinColumn(name = "requestor_id")
+    User requestor;
     @CreationTimestamp
     LocalDate created;
 }

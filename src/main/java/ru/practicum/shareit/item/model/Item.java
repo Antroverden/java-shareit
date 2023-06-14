@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
@@ -27,7 +27,6 @@ public class Item {
     @JoinColumn(name = "owner_id")
     User owner;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "request_id")
     ItemRequest itemRequest;
-    int request_id;
 }

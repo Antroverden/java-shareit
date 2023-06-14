@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.request.ItemRequest;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,5 +20,5 @@ public class ItemDto {
     @NotNull
     Boolean available;
     int ownerId;
-    ItemRequest itemRequest;
+    int requestId;
 }

@@ -16,16 +16,20 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "bookings")
 public class Booking {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
+    @Column(name = "start_date")
     LocalDate start;
+    @Column(name = "end_date")
     LocalDate end;
     @OneToOne
     @JoinColumn(name = "item_id")
     Item item;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "booker_id")
     User booker;
     @Enumerated(EnumType.STRING)
     Status status;
