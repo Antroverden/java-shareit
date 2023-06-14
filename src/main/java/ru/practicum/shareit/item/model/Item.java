@@ -19,14 +19,14 @@ import javax.persistence.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
     String name;
     String description;
     Boolean available;
     @ManyToOne
     @JoinColumn(name = "owner_id")
     User owner;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id")
     ItemRequest itemRequest;
 }

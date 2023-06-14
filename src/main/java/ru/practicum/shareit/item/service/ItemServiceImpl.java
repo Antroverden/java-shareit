@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item addItemToUser(Item item) {
         Integer ownerId = item.getOwner().getId();
-        if (userRepository.existsById(ownerId)) {
+        if (!userRepository.existsById(ownerId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "Юзера с айди " + ownerId + "не существует");
         }
@@ -36,11 +37,24 @@ public class ItemServiceImpl implements ItemService {
         Integer ownerFromDBId = itemRepository.findById(item.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Айтема с айди " + item.getId() + "не существует")).getId();
         Integer ownerId = item.getOwner().getId();
-        if (!ownerFromDBId.equals(ownerId)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+        Item itemFromDB = getItemById(item.getId());
+        if (item.getAvailable() != null) {
+            itemFromDB.setAvailable(item.getAvailable());
+        }
+        else if (!ownerFromDBId.equals(ownerId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
-        return itemRepository.save(item);
+        if (item.getName() != null) {
+            itemFromDB.setName(item.getName());
+        }
+        if (item.getDescription() != null) {
+            itemFromDB.setDescription(item.getDescription());
+        }
+        if (item.getAvailable() != null) {
+            itemFromDB.setAvailable(item.getAvailable());
+        }
+        return itemRepository.save(itemFromDB);
     }
 
     @Override

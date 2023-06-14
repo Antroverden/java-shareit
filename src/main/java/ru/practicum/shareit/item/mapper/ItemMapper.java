@@ -23,13 +23,16 @@ public class ItemMapper {
 
     public ItemDto toDto(Item item) {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner().getId(), item.getItemRequest().getId());
+                item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId());
     }
 
     public Item toItem(ItemDto itemDto) {
         User user = userRepository.findById(itemDto.getOwnerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Юзера с айди " + itemDto.getOwnerId() + "не существует"));
-        ItemRequest itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElse(null);
+        ItemRequest itemRequest;
+        if (itemDto.getRequestId() != null) {
+            itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElse(null);
+        } else itemRequest = null;
         return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
                 user, itemRequest);
     }
