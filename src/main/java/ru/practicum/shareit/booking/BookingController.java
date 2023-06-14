@@ -5,12 +5,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.Booking.Status;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoFull;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
-import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.booking.Booking.Status;
 
 import javax.validation.Valid;
 
@@ -25,16 +24,23 @@ public class BookingController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BookingDtoFull addBooking(@Valid @RequestBody BookingDto bookingDto, @RequestHeader("X-Sharer-User-Id") int bookerId) {
+    public BookingDtoFull addBooking(@Valid @RequestBody BookingDto bookingDto,
+                                     @RequestHeader("X-Sharer-User-Id") int bookerId) {
         bookingDto.setBookerId(bookerId);
         return bookingMapper.toDtoFull(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
     }
 
-//    @PatchMapping("/{bookingId}")
-//    public BookingDto approveOrRejectBooking(@PathVariable int bookingId, @RequestParam boolean approved) {
-//        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
-//    }
-//
+    @PatchMapping("/{bookingId}")
+    public BookingDtoFull approveOrRejectBooking(@PathVariable int bookingId, @RequestParam boolean approved,
+                                             @RequestHeader("X-Sharer-User-Id") int bookerId) {
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setId(bookingId);
+        bookingDto.setBookerId(bookerId);
+        if (approved) bookingDto.setStatus(Status.APPROVED);
+        else bookingDto.setStatus(Status.REJECTED);
+        return bookingMapper.toDtoFull(bookingService.updateBooking((bookingMapper.toBooking(bookingDto))));
+    }
+
 //    @GetMapping("/{bookingId}")
 //    public BookingDto getBookingInfo(@PathVariable int bookingId) {
 //        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));

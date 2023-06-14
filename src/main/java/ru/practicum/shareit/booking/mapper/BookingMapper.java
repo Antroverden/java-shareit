@@ -37,7 +37,7 @@ public class BookingMapper {
     }
 
     public Booking toBooking(BookingDto bookingDto) {
-        Item item = itemService.getItemById(bookingDto.getItemId());
+        Item item = bookingDto.getItemId() == null? null : itemService.getItemById(bookingDto.getItemId());
         User booker = userService.getUserById(bookingDto.getBookerId());
         return new Booking(bookingDto.getId(), bookingDto.getStart(), bookingDto.getEnd(), item,
               booker, bookingDto.getStatus());

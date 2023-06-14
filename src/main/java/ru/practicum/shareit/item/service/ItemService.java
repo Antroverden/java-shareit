@@ -9,7 +9,7 @@ public interface ItemService {
 
     Item updateItem(Item item);
 
-    Item getItemById(int id);
+    Item getItemById(Integer id);
 
     List<Item> getItems(int ownerId);
 

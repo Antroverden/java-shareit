@@ -58,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItemById(int id) {
+    public Item getItemById(Integer id) {
         return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                 "Айтема с айди " + id + "не существует"));
     }

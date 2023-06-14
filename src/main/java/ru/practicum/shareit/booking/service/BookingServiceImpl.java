@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 @Service
@@ -27,28 +28,18 @@ public class BookingServiceImpl {
         return bookingRepository.save(booking);
     }
 
-//    public Booking updateBooking(Booking booking) {
-//        Integer ownerFromDBId = bookingRepository.findById(booking.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-//                "Айтема с айди " + booking.getId() + "не существует")).getId();
-//        Integer ownerId = booking.getOwner().getId();
-//        Booking bookingFromDB = getBookingById(booking.getId());
-//        if (booking.getAvailable() != null) {
-//            bookingFromDB.setAvailable(booking.getAvailable());
-//        } else if (!ownerFromDBId.equals(ownerId)) {
-//            throw new ResponseStatusException(HttpStatus.CONFLICT,
-//                    "Юзер с айди " + ownerId + "не является владельцем данной вещи");
-//        }
-//        if (booking.getName() != null) {
-//            bookingFromDB.setName(booking.getName());
-//        }
-//        if (booking.getDescription() != null) {
-//            bookingFromDB.setDescription(booking.getDescription());
-//        }
-//        if (booking.getAvailable() != null) {
-//            bookingFromDB.setAvailable(booking.getAvailable());
-//        }
-//        return bookingRepository.save(bookingFromDB);
-//    }
+    public Booking updateBooking(Booking booking) {
+        Booking bookingFromDB = bookingRepository.findById(booking.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Integer ownerId = bookingFromDB.getBooker().getId();
+        if (booking.getBooker().getId().equals(ownerId)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Юзер с айди " + ownerId + "не является владельцем данной вещи");
+        }
+        if (booking.getStatus() != null) {
+            bookingFromDB.setStatus(booking.getStatus());
+        }
+        return bookingRepository.save(bookingFromDB);
+    }
 //
 //
 //    public Booking getBookingById(int id) {
