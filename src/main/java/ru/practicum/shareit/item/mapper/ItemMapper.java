@@ -3,22 +3,20 @@ package ru.practicum.shareit.item.mapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.storage.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserRepository;
+import ru.practicum.shareit.user.service.UserService;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
 public class ItemMapper {
 
-    UserRepository userRepository;
+    UserService userService;
     ItemRequestRepository itemRequestRepository;
 
     public ItemDto toDto(Item item) {
@@ -27,8 +25,7 @@ public class ItemMapper {
     }
 
     public Item toItem(ItemDto itemDto) {
-        User user = userRepository.findById(itemDto.getOwnerId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                "Юзера с айди " + itemDto.getOwnerId() + "не существует"));
+        User user = userService.getUserById(itemDto.getOwnerId());
         ItemRequest itemRequest;
         if (itemDto.getRequestId() != null) {
             itemRequest = itemRequestRepository.findById(itemDto.getRequestId()).orElse(null);

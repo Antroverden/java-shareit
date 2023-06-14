@@ -10,6 +10,7 @@ import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -20,12 +21,12 @@ import java.time.LocalDate;
 public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    Integer id;
     @Column(name = "start_date")
-    LocalDate start;
+    LocalDateTime start;
     @Column(name = "end_date")
-    LocalDate end;
-    @OneToOne
+    LocalDateTime end;
+    @ManyToOne
     @JoinColumn(name = "item_id")
     Item item;
     @ManyToOne
@@ -34,7 +35,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     Status status;
 
-    enum Status {
+    public enum Status {
         WAITING, APPROVED, REJECTED, CANCELED
     }
 }
