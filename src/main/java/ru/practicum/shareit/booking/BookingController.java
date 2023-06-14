@@ -12,6 +12,8 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,7 +34,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingDtoFull approveOrRejectBooking(@PathVariable int bookingId, @RequestParam boolean approved,
-                                             @RequestHeader("X-Sharer-User-Id") int bookerId) {
+                                                 @RequestHeader("X-Sharer-User-Id") int bookerId) {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(bookingId);
         bookingDto.setBookerId(bookerId);
@@ -41,22 +43,28 @@ public class BookingController {
         return bookingMapper.toDtoFull(bookingService.updateBooking((bookingMapper.toBooking(bookingDto))));
     }
 
-//    @GetMapping("/{bookingId}")
-//    public BookingDto getBookingInfo(@PathVariable int bookingId) {
-//        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
-//    }
-//
-//    @GetMapping
-//    public BookingDto getBookingInfoOfBooking(@RequestParam(required = false, defaultValue = "ALL") State state) {
-//        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
-//    }
-//
-//    @GetMapping("/owner")
-//    public BookingDto getBookingInfoOfItemsOfBooking(@RequestParam(required = false, defaultValue = "ALL") State state) {
-//        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
-//    }
+    @GetMapping("/{bookingId}")
+    public BookingDtoFull getBookingInfo(@PathVariable int bookingId, @RequestHeader("X-Sharer-User-Id") int userId) {
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setId(bookingId);
+        return bookingMapper.toDtoFull(bookingService.getBookingById(bookingId, userId));
+    }
 
-    enum State {
+    @GetMapping
+    public List<BookingDtoFull> getBookingInfoOfBooking(
+            @RequestParam(required = false, defaultValue = "ALL") State state,
+            @RequestHeader("X-Sharer-User-Id") int bookerId) {
+        return bookingService.getBookings(bookerId, state, false).stream().map(bookingMapper::toDtoFull).collect(Collectors.toList());
+    }
+
+    @GetMapping("/owner")
+    public List<BookingDtoFull> getBookingInfoOfItemsOfBooking(
+            @RequestParam(required = false, defaultValue = "ALL") State state,
+            @RequestHeader("X-Sharer-User-Id") int ownerId) {
+        return bookingService.getBookings(ownerId, state, true).stream().map(bookingMapper::toDtoFull).collect(Collectors.toList());
+    }
+
+    public enum State {
         ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED
     }
 }
