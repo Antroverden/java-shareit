@@ -11,5 +11,4 @@ public class BadRequestException {
     public String getError() {
         return error;
     }
-
 }
