@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.Booking;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+
+import static ru.practicum.shareit.booking.Booking.Status;
 
 @AllArgsConstructor
 @Data
@@ -25,5 +26,5 @@ public class BookingDto {
     LocalDateTime end;
     Integer itemId;
     Integer bookerId;
-    Booking.Status status;
+    Status status;
 }

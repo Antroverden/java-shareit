@@ -20,6 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.shareit.booking.Booking.Status.APPROVED;
+import static ru.practicum.shareit.booking.Booking.Status.WAITING;
+
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
@@ -32,14 +35,18 @@ public class ItemMapper {
     CommentMapper commentMapper;
 
     public ItemDto toDto(Item item) {
-        List<CommentDtoWithName> comments = commentRepository.findAllByItem_Id(item.getId()).stream().map(commentMapper::toDto).collect(Collectors.toList());
+        List<CommentDtoWithName> comments = commentRepository.findAllByItem_Id(item.getId()).stream()
+                .map(commentMapper::toDto).collect(Collectors.toList());
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId(), null, null, comments);
+                item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId(),
+                null, null, comments);
     }
 
     public ItemDto toDtoWithLastAndNextBooking(Item item) {
-        Booking lastBooking = bookingRepository.findFirstByStartBeforeAndItem_IdAndStatusInOrderByEndDesc(LocalDateTime.now(), item.getId(), List.of(Booking.Status.WAITING, Booking.Status.APPROVED));
-        Booking nextBooking = bookingRepository.findFirstByStartAfterAndItem_IdAndStatusInOrderByStartAsc(LocalDateTime.now(), item.getId(), List.of(Booking.Status.WAITING, Booking.Status.APPROVED));
+        Booking lastBooking = bookingRepository.findFirstByStartBeforeAndItem_IdAndStatusInOrderByEndDesc(
+                LocalDateTime.now(), item.getId(), List.of(WAITING, APPROVED));
+        Booking nextBooking = bookingRepository.findFirstByStartAfterAndItem_IdAndStatusInOrderByStartAsc(
+                LocalDateTime.now(), item.getId(), List.of(WAITING, APPROVED));
         LightBooking lastBook = null;
         LightBooking nextBook = null;
         if (lastBooking != null) {
@@ -48,9 +55,11 @@ public class ItemMapper {
         if (nextBooking != null) {
             nextBook = new LightBooking(nextBooking.getId(), nextBooking.getBooker().getId());
         }
-        List<CommentDtoWithName> comments = commentRepository.findAllByItem_Id(item.getId()).stream().map(commentMapper::toDto).collect(Collectors.toList());
+        List<CommentDtoWithName> comments = commentRepository.findAllByItem_Id(item.getId()).stream()
+                .map(commentMapper::toDto).collect(Collectors.toList());
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId(), lastBook, nextBook, comments);
+                item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId(),
+                lastBook, nextBook, comments);
     }
 
     public Item toItem(ItemDto itemDto) {
