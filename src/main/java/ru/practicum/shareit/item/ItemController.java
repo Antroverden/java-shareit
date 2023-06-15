@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.dto.CommentDtoWithName;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -43,7 +44,11 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemService.getItemById(itemId, userId);
+        Item item = itemService.getItemById(itemId);
+        if (item.getOwner().getId().equals(userId)) {
+            return itemMapper.toDtoWithLastAndNextBooking(item);
+        }
+        return itemMapper.toDto(item);
     }
 
     @GetMapping

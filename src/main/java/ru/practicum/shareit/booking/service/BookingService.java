@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingController;
 
 import java.util.List;
 
@@ -12,5 +11,5 @@ public interface BookingService {
 
     Booking getBookingById(int id, Integer userId);
 
-    List<Booking> getBookings(int userId, BookingController.State state, boolean getForOwner);
+    List<Booking> getBookings(int userId, BookingServiceImpl.State state, boolean getForOwner);
 }

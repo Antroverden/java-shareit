@@ -6,7 +6,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingController.State;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
@@ -118,5 +117,9 @@ public class BookingServiceImpl implements BookingService {
             default:
                 return null;
         }
+    }
+
+    public enum State {
+        ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED
     }
 }

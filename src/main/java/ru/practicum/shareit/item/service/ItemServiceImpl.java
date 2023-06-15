@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
@@ -29,7 +27,6 @@ public class ItemServiceImpl implements ItemService {
     UserRepository userRepository;
     CommentRepository commentRepository;
     BookingRepository bookingRepository;
-    ItemMapper itemMapper;
 
     @Override
     public Item addItemToUser(Item item) {
@@ -65,15 +62,6 @@ public class ItemServiceImpl implements ItemService {
     public Item getItemById(Integer id) {
         return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                 "Айтема с айди " + id + "не существует"));
-    }
-
-    @Override
-    public ItemDto getItemById(Integer id, Integer userId) {
-        Item item = getItemById(id);
-        if (item.getOwner().getId().equals(userId)) {
-            return itemMapper.toDtoWithLastAndNextBooking(item);
-        }
-        return itemMapper.toDto(item);
     }
 
     @Override
