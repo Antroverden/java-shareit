@@ -16,6 +16,8 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -25,14 +27,16 @@ public class CommentMapper {
     ItemRepository itemRepository;
 
     public CommentDtoWithName toDto(Comment comment) {
-        return new CommentDtoWithName(comment.getId(), comment.getText(), comment.getItem().getId(), comment.getAuthor().getName(), comment.getCreated());
+        return new CommentDtoWithName(comment.getId(), comment.getText(), comment.getItem().getId(),
+                comment.getAuthor().getName(), comment.getCreated());
     }
 
     public Comment toComment(CommentDto commentDto) {
         Item item = null;
-        if (commentDto.getItemId() != null) {
-            item = itemRepository.findById(commentDto.getItemId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "Айтема с айди " + commentDto.getItemId() + "не существует"));
+        Integer itemId = commentDto.getItemId();
+        if (itemId != null) {
+            item = itemRepository.findById(itemId).orElseThrow(
+                    () -> new ResponseStatusException(NOT_FOUND, "Айтема с айди " + itemId + "не существует"));
         }
         User user = userService.getUserById(commentDto.getAuthorId());
         return new Comment(commentDto.getId(), commentDto.getText(), item, user, LocalDateTime.now());

@@ -48,7 +48,8 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.getItems(ownerId).stream().map(itemMapper::toDtoWithLastAndNextBooking).collect(Collectors.toList());
+        return itemService.getItems(ownerId).stream()
+                .map(itemMapper::toDtoWithLastAndNextBooking).collect(Collectors.toList());
     }
 
     @GetMapping("/search")

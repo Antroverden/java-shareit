@@ -54,16 +54,16 @@ public class BookingController {
     public List<BookingDtoFull> getBookingInfo(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int bookerId) {
-        return Optional.ofNullable(bookingService.getBookings(bookerId, state, false)).stream().flatMap(Collection::stream)
-                .map(bookingMapper::toDto).collect(Collectors.toList());
+        return Optional.ofNullable(bookingService.getBookings(bookerId, state, false))
+                .stream().flatMap(Collection::stream).map(bookingMapper::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
     public List<BookingDtoFull> getBookingInfoOfItems(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return Optional.ofNullable(bookingService.getBookings(ownerId, state, true)).stream().flatMap(Collection::stream)
-                .map(bookingMapper::toDto).collect(Collectors.toList());
+        return Optional.ofNullable(bookingService.getBookings(ownerId, state, true))
+                .stream().flatMap(Collection::stream).map(bookingMapper::toDto).collect(Collectors.toList());
     }
 
     public enum State {

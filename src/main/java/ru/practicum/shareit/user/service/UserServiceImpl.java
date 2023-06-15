@@ -12,6 +12,9 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -24,7 +27,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.save(user);
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
+            throw new ResponseStatusException(CONFLICT,
                     "Юзер с имейлом " + user.getEmail() + "уже существует");
         }
     }
@@ -43,7 +46,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
                 "Юзера с айди " + id + "не существует"));
     }
 
