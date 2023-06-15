@@ -48,13 +48,11 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingDtoFull getBookingInfo(@PathVariable int bookingId, @RequestHeader("X-Sharer-User-Id") int userId) {
-        BookingDto bookingDto = new BookingDto();
-        bookingDto.setId(bookingId);
         return bookingMapper.toDtoFull(bookingService.getBookingById(bookingId, userId));
     }
 
     @GetMapping
-    public List<BookingDtoFull> getBookingInfoOfBooking(
+    public List<BookingDtoFull> getBookingInfo(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int bookerId) {
         return Optional.ofNullable(bookingService.getBookings(bookerId, state, false)).stream().flatMap(Collection::stream)
@@ -62,7 +60,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public List<BookingDtoFull> getBookingInfoOfItemsOfBooking(
+    public List<BookingDtoFull> getBookingInfoOfItems(
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int ownerId) {
         return Optional.ofNullable(bookingService.getBookings(ownerId, state, true)).stream().flatMap(Collection::stream)

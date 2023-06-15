@@ -6,6 +6,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
@@ -19,6 +21,7 @@ public class ItemServiceImpl implements ItemService {
 
     ItemRepository itemRepository;
     UserRepository userRepository;
+    ItemMapper itemMapper;
 
     @Override
     public Item addItemToUser(Item item) {
@@ -60,8 +63,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public ItemDto getItemById(Integer id, Integer userId) {
+        Item item = getItemById(id);
+        if (item.getOwner().getId().equals(userId)) {
+            return itemMapper.toDtoWithLastAndNextBooking(item);
+        }
+        return itemMapper.toDto(item);
+    }
+
+    @Override
     public List<Item> getItems(int ownerId) {
-        return itemRepository.findItemsByOwner_Id(ownerId);
+        return itemRepository.findItemsByOwner_IdOrderById(ownerId);
     }
 
     @Override

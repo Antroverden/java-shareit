@@ -38,13 +38,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable int itemId) {
-        return itemMapper.toDto(itemService.getItemById(itemId));
+    public ItemDto getItemById(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemService.getItemById(itemId, userId);
     }
 
     @GetMapping
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.getItems(ownerId).stream().map(itemMapper::toDto).collect(Collectors.toList());
+        return itemService.getItems(ownerId).stream().map(itemMapper::toDtoWithLastAndNextBooking).collect(Collectors.toList());
     }
 
     @GetMapping("/search")

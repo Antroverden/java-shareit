@@ -72,8 +72,18 @@ public class BookingServiceImpl {
                 if (getForOwner) return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
                 else return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
             }
-            case REJECTED:
-            case WAITING:
+            case WAITING: {
+                if (getForOwner)
+                    return bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, Booking.Status.WAITING);
+                else
+                    return bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, Booking.Status.WAITING);
+            }
+            case REJECTED: {
+                if (getForOwner)
+                    return bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, Booking.Status.REJECTED);
+                else
+                    return bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, Booking.Status.REJECTED);
+            }
             case PAST:
             case FUTURE: {
                 if (getForOwner) {
