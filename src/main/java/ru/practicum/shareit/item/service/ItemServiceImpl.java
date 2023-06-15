@@ -42,13 +42,10 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item updateItem(Item item) {
-        Integer ownerFromDBId = itemRepository.findById(item.getId()).orElseThrow(
-                () -> new ResponseStatusException(NOT_FOUND, "Айтема с айди " + item.getId() + "не существует")).getId();
-        Integer ownerId = item.getOwner().getId();
         Item itemFromDB = getItemById(item.getId());
-        if (item.getAvailable() != null) {
-            itemFromDB.setAvailable(item.getAvailable());
-        } else if (!ownerFromDBId.equals(ownerId)) {
+        Integer ownerFromDBId = itemFromDB.getOwner().getId();
+        Integer ownerId = item.getOwner().getId();
+        if (!ownerFromDBId.equals(ownerId)) {
             throw new ResponseStatusException(CONFLICT,
                     "Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
