@@ -3,7 +3,6 @@ package ru.practicum.shareit.item.mapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.item.dto.CommentDto;
