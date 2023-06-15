@@ -31,7 +31,7 @@ public class BookingController {
     public BookingDtoFull addBooking(@Valid @RequestBody BookingDto bookingDto,
                                      @RequestHeader("X-Sharer-User-Id") int bookerId) {
         bookingDto.setBookerId(bookerId);
-        return bookingMapper.toDtoFull(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
+        return bookingMapper.toDto(bookingService.addBooking(bookingMapper.toBooking(bookingDto)));
     }
 
     @PatchMapping("/{bookingId}")
@@ -42,12 +42,12 @@ public class BookingController {
         bookingDto.setBookerId(bookerId);
         if (approved) bookingDto.setStatus(Status.APPROVED);
         else bookingDto.setStatus(Status.REJECTED);
-        return bookingMapper.toDtoFull(bookingService.updateBooking((bookingMapper.toBooking(bookingDto))));
+        return bookingMapper.toDto(bookingService.updateBooking((bookingMapper.toBooking(bookingDto))));
     }
 
     @GetMapping("/{bookingId}")
     public BookingDtoFull getBookingInfo(@PathVariable int bookingId, @RequestHeader("X-Sharer-User-Id") int userId) {
-        return bookingMapper.toDtoFull(bookingService.getBookingById(bookingId, userId));
+        return bookingMapper.toDto(bookingService.getBookingById(bookingId, userId));
     }
 
     @GetMapping
@@ -55,7 +55,7 @@ public class BookingController {
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int bookerId) {
         return Optional.ofNullable(bookingService.getBookings(bookerId, state, false)).stream().flatMap(Collection::stream)
-                .map(bookingMapper::toDtoFull).collect(Collectors.toList());
+                .map(bookingMapper::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("/owner")
@@ -63,7 +63,7 @@ public class BookingController {
             @RequestParam(required = false, defaultValue = "ALL") State state,
             @RequestHeader("X-Sharer-User-Id") int ownerId) {
         return Optional.ofNullable(bookingService.getBookings(ownerId, state, true)).stream().flatMap(Collection::stream)
-                .map(bookingMapper::toDtoFull).collect(Collectors.toList());
+                .map(bookingMapper::toDto).collect(Collectors.toList());
     }
 
     public enum State {

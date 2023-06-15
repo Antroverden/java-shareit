@@ -20,12 +20,7 @@ public class BookingMapper {
     UserService userService;
     ItemService itemService;
 
-    public BookingDto toDto(Booking booking) {
-        return new BookingDto(booking.getId(), booking.getStart(), booking.getEnd(), booking.getItem().getId(),
-                booking.getBooker().getId(), booking.getStatus());
-    }
-
-    public BookingDtoFull toDtoFull(Booking booking) {
+    public BookingDtoFull toDto(Booking booking) {
         return new BookingDtoFull(booking.getId(), booking.getStart(), booking.getEnd(), booking.getItem(),
                 booking.getBooker(), booking.getStatus());
     }

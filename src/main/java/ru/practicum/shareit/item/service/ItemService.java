@@ -21,5 +21,5 @@ public interface ItemService {
 
     List<Item> searchItems(String text);
 
-    public Comment addCommentToItem(Comment comment);
+    Comment addCommentToItem(Comment comment);
 }
