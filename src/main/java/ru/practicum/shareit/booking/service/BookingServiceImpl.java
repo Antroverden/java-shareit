@@ -18,12 +18,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class BookingServiceImpl {
+public class BookingServiceImpl implements BookingService {
 
     BookingRepository bookingRepository;
     ItemService itemService;
     UserService userService;
 
+    @Override
     public Booking addBooking(Booking booking) {
         Integer ownerId = booking.getItem().getOwner().getId();
         if (booking.getBooker().getId().equals(booking.getItem().getOwner().getId())) {
@@ -38,6 +39,7 @@ public class BookingServiceImpl {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public Booking updateBooking(Booking booking) {
         Booking bookingFromDB = bookingRepository.findById(booking.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
@@ -53,6 +55,7 @@ public class BookingServiceImpl {
         return bookingRepository.save(bookingFromDB);
     }
 
+    @Override
     public Booking getBookingById(int id, Integer userId) {
         Booking bookingFromDB = bookingRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Бронирования с айди " + id + "не существует"));
@@ -65,6 +68,7 @@ public class BookingServiceImpl {
         return bookingFromDB;
     }
 
+    @Override
     public List<Booking> getBookings(int userId, State state, boolean getForOwner) {
         userService.getUserById(userId);
         switch (state) {
@@ -85,6 +89,13 @@ public class BookingServiceImpl {
                     return bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, Booking.Status.REJECTED);
             }
             case PAST:
+                if (getForOwner) {
+                    return bookingRepository.findAllByItem_Owner_IdAndEndBeforeOrderByStartDesc(userId,
+                            LocalDateTime.now());
+                } else {
+                    return bookingRepository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(userId,
+                            LocalDateTime.now()); //TODO Проверить сортировку
+                }
             case FUTURE: {
                 if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStartAfterOrderByStartDesc(userId,
@@ -94,7 +105,15 @@ public class BookingServiceImpl {
                             LocalDateTime.now());
                 }
             }
-            case CURRENT:
+            case CURRENT: {
+                if (getForOwner) {
+                    return bookingRepository.findAllByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
+                            LocalDateTime.now(), LocalDateTime.now());
+                } else {
+                    return bookingRepository.findAllByBooker_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
+                            LocalDateTime.now(), LocalDateTime.now());
+                }
+            }
             default:
                 return null;
         }

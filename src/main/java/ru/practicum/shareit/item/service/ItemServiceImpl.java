@@ -6,12 +6,17 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentRepository;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.storage.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,6 +26,8 @@ public class ItemServiceImpl implements ItemService {
 
     ItemRepository itemRepository;
     UserRepository userRepository;
+    CommentRepository commentRepository;
+    BookingRepository bookingRepository;
     ItemMapper itemMapper;
 
     @Override
@@ -85,5 +92,18 @@ public class ItemServiceImpl implements ItemService {
     public List<Item> searchItems(String text) {
         if (text.isBlank()) return List.of();
         return itemRepository.search(text);
+    }
+
+    @Override
+    public Comment addCommentToItem(Comment comment) {
+        if (comment.getText().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Комментарий не может быть пустым");
+        }
+        List<Booking> userBookings = bookingRepository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(comment.getAuthor().getId(),
+                LocalDateTime.now());
+        if (userBookings.isEmpty()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "Юзер с айди " + comment.getAuthor().getId() + " ранее не бронировал вещи");
+        return commentRepository.save(comment);
     }
 }

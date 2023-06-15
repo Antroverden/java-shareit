@@ -5,15 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CommentDto {
+public class CommentDtoWithName {
     Integer id;
     String text;
     Integer itemId;
-    Integer authorId;
+    String authorName;
     LocalDateTime created;
 }

@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoWithName;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -21,6 +24,7 @@ public class ItemController {
 
     ItemService itemService;
     ItemMapper itemMapper;
+    CommentMapper commentMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -53,10 +57,11 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addCommentToItem(@Valid @RequestBody ItemDto itemDto, @PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        itemDto.setOwnerId(ownerId);
-        return itemMapper.toDto(itemService.addItemToUser(itemMapper.toItem(itemDto)));
+    public CommentDtoWithName addCommentToItem(@Valid @RequestBody CommentDto commentDto, @PathVariable int itemId,
+                                               @RequestHeader("X-Sharer-User-Id") int userId) {
+        commentDto.setItemId(itemId);
+        commentDto.setAuthorId(userId);
+        return commentMapper.toDto(itemService.addCommentToItem(commentMapper.toComment(commentDto)));
     }
 
     @DeleteMapping("/{itemId}")
