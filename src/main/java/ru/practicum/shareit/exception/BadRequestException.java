@@ -1,14 +1,10 @@
 package ru.practicum.shareit.exception;
 
-public class BadRequestException {
+import org.springframework.http.HttpStatus;
 
-    private final String error;
+public class BadRequestException extends RuntimeException{
 
-    public BadRequestException(String error) {
-        this.error = error;
-    }
-
-    public String getError() {
-        return error;
+    public BadRequestException(String message) {
+        super(message);
     }
 }

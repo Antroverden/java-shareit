@@ -4,19 +4,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static ru.practicum.shareit.booking.Booking.Status.REJECTED;
-import static ru.practicum.shareit.booking.Booking.Status.WAITING;
+import static ru.practicum.shareit.booking.Booking.Status.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +29,11 @@ public class BookingServiceImpl implements BookingService {
     public Booking addBooking(Booking booking) {
         Integer ownerId = booking.getItem().getOwner().getId();
         if (booking.getBooker().getId().equals(booking.getItem().getOwner().getId())) {
-            throw new ResponseStatusException(NOT_FOUND,
-                    "Юзер с айди " + ownerId + "является владельцем данной вещи");
+            throw new NotFoundException("Юзер с айди " + ownerId + "является владельцем данной вещи");
         }
         if (booking.getEnd().isBefore(booking.getStart()) || booking.getStart().isEqual(booking.getEnd())
                 || !itemService.getItemById(booking.getItem().getId()).getAvailable()) {
-            throw new ResponseStatusException(BAD_REQUEST);
+            throw new BadRequestException("Вещь недоступна");
         }
         booking.setStatus(WAITING);
         return bookingRepository.save(booking);
@@ -45,16 +42,15 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking updateBooking(Booking booking) {
         Booking bookingFromDB = bookingRepository.findById(booking.getId())
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+                .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
         if (!(booking.getBooker().getId().equals(ownerId))) {
-            throw new ResponseStatusException(NOT_FOUND,
+            throw new NotFoundException(
                     "Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
-        if (booking.getStatus() != null && booking.getStatus() == Booking.Status.APPROVED
-                && bookingFromDB.getStatus() == Booking.Status.APPROVED) {
-            throw new ResponseStatusException(BAD_REQUEST,
-                    "Юзер с айди " + ownerId + "уже одобрил бронирование данной вещи");
+        if (booking.getStatus() != null && booking.getStatus() == APPROVED
+                && bookingFromDB.getStatus() == APPROVED) {
+            throw new BadRequestException("Юзер с айди " + ownerId + "уже одобрил бронирование данной вещи");
         }
         bookingFromDB.setStatus(booking.getStatus());
         return bookingRepository.save(bookingFromDB);
@@ -63,49 +59,51 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking getBookingById(int id, Integer userId) {
         Booking bookingFromDB = bookingRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(NOT_FOUND, "Бронирования с айди " + id + "не существует"));
+                () -> new NotFoundException("Бронирования с айди " + id + "не существует"));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
         Integer bookerId = bookingFromDB.getBooker().getId();
         if (!(userId.equals(ownerId) || userId.equals(bookerId))) {
-            throw new ResponseStatusException(NOT_FOUND,
+            throw new NotFoundException(
                     "Юзер с айди " + ownerId + "не является владельцем или автором бронирования данной вещи");
         }
         return bookingFromDB;
     }
 
     @Override
-    public List<Booking> getBookings(int userId, State state, boolean getForOwner) {
+    public List<Booking> getBookings(int userId, String state, boolean getForOwner) {
         userService.getUserById(userId);
         LocalDateTime now;
         switch (state) {
-            case ALL:
+            case "ALL":
                 if (getForOwner) return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
                 else return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
-            case WAITING:
-                if (getForOwner)
+            case "WAITING":
+                if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, WAITING);
-                else
+                } else {
                     return bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, WAITING);
-            case REJECTED:
-                if (getForOwner)
+                }
+            case "REJECTED":
+                if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, REJECTED);
-                else
+                } else {
                     return bookingRepository.findAllByBooker_IdAndStatusOrderByStartDesc(userId, REJECTED);
-            case PAST:
+                }
+            case "PAST":
                 now = LocalDateTime.now();
                 if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndEndBeforeOrderByStartDesc(userId, now);
                 } else {
                     return bookingRepository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(userId, now);
                 }
-            case FUTURE:
+            case "FUTURE":
                 now = LocalDateTime.now();
                 if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStartAfterOrderByStartDesc(userId, now);
                 } else {
                     return bookingRepository.findAllByBooker_IdAndStartAfterOrderByStartDesc(userId, now);
                 }
-            case CURRENT:
+            case "CURRENT":
                 now = LocalDateTime.now();
                 if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStartBeforeAndEndAfterOrderByStartDesc(userId,
@@ -115,11 +113,7 @@ public class BookingServiceImpl implements BookingService {
                             now, now);
                 }
             default:
-                return null;
+                throw new BadRequestException("Unknown state: UNSUPPORTED_STATUS");
         }
-    }
-
-    public enum State {
-        ALL, CURRENT, PAST, FUTURE, WAITING, REJECTED
     }
 }

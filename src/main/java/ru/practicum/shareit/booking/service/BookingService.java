@@ -11,5 +11,5 @@ public interface BookingService {
 
     Booking getBookingById(int id, Integer userId);
 
-    List<Booking> getBookings(int userId, BookingServiceImpl.State state, boolean getForOwner);
+    List<Booking> getBookings(int userId, String state, boolean getForOwner);
 }

@@ -5,14 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +24,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.save(user);
         } catch (DataAccessException e) {
-            throw new ResponseStatusException(CONFLICT,
-                    "Юзер с имейлом " + user.getEmail() + "уже существует");
+            throw new ConflictException("Юзер с имейлом " + user.getEmail() + "уже существует");
         }
     }
 
@@ -45,7 +42,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(int id) {
-        return userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "Юзера с айди " + id + "не существует"));
     }
 

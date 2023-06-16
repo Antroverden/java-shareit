@@ -4,9 +4,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentRepository;
@@ -15,8 +17,6 @@ import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.springframework.http.HttpStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class ItemServiceImpl implements ItemService {
     public Item addItemToUser(Item item) {
         Integer ownerId = item.getOwner().getId();
         if (!userRepository.existsById(ownerId)) {
-            throw new ResponseStatusException(NOT_FOUND, "Юзера с айди " + ownerId + "не существует");
+            throw new NotFoundException("Юзера с айди " + ownerId + "не существует");
         }
         return itemRepository.save(item);
     }
@@ -43,8 +43,7 @@ public class ItemServiceImpl implements ItemService {
         Integer ownerFromDBId = itemFromDB.getOwner().getId();
         Integer ownerId = item.getOwner().getId();
         if (!ownerFromDBId.equals(ownerId)) {
-            throw new ResponseStatusException(CONFLICT,
-                    "Юзер с айди " + ownerId + "не является владельцем данной вещи");
+            throw new ConflictException("Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
         if (item.getName() != null) {
             itemFromDB.setName(item.getName());
@@ -60,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItemById(Integer id) {
-        return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(NOT_FOUND,
+        return itemRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "Айтема с айди " + id + "не существует"));
     }
 
@@ -83,11 +82,11 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Comment addCommentToItem(Comment comment) {
         if (comment.getText().isBlank()) {
-            throw new ResponseStatusException(BAD_REQUEST, "Комментарий не может быть пустым");
+            throw new BadRequestException("Комментарий не может быть пустым");
         }
         List<Booking> userBookings = bookingRepository.findAllByBooker_IdAndEndBeforeOrderByStartDesc(
                 comment.getAuthor().getId(), LocalDateTime.now());
-        if (userBookings.isEmpty()) throw new ResponseStatusException(BAD_REQUEST,
+        if (userBookings.isEmpty()) throw new BadRequestException(
                 "Юзер с айди " + comment.getAuthor().getId() + " ранее не бронировал вещи");
         return commentRepository.save(comment);
     }
