@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.dto.BookingWithIdsDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDtoWithName;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -40,6 +40,10 @@ public class ItemMapper {
         return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
                 item.getOwner().getId(), item.getItemRequest() == null ? null : item.getItemRequest().getId(),
                 null, null, comments);
+    }
+
+    public List<ItemDto> toDto(List<Item> items) {
+        return items.stream().map(this::toDtoWithLastAndNextBooking).collect(Collectors.toList());
     }
 
     public ItemDto toDtoWithLastAndNextBooking(Item item) {
