@@ -3,11 +3,12 @@ package ru.practicum.shareit.user.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.util.List;
 
@@ -16,39 +17,42 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserServiceImpl implements UserService {
 
-    UserStorage userStorage;
+    UserRepository userRepository;
 
     @Override
     public User addUser(User user) {
-        if (userStorage.getUsers().stream().anyMatch(u -> u.getEmail().equals(user.getEmail()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Юзер с имейлом " + user.getEmail() + "уже существует");
+        try {
+            return userRepository.save(user);
+        } catch (DataAccessException e) {
+            throw new ConflictException("Юзер с имейлом " + user.getEmail() + "уже существует");
         }
-        return userStorage.addUser(user);
     }
 
     @Override
     public User updateUser(User user) {
-        if (userStorage.getUsers().stream()
-                .anyMatch(u -> (u.getEmail().equals(user.getEmail()) && u.getId() != user.getId()))) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT,
-                    "Юзер с имейлом " + user.getEmail() + "уже существует");
+        User userFromDB = getUserById(user.getId());
+        if (user.getName() != null) {
+            userFromDB.setName(user.getName());
         }
-        return userStorage.updateUser(user);
+        if (user.getEmail() != null) {
+            userFromDB.setEmail(user.getEmail());
+        }
+        return userRepository.save(userFromDB);
     }
 
     @Override
     public User getUserById(int id) {
-        return userStorage.getUserById(id);
+        return userRepository.findById(id).orElseThrow(() -> new NotFoundException(
+                "Юзера с айди " + id + "не существует"));
     }
 
     @Override
     public List<User> getUsers() {
-        return userStorage.getUsers();
+        return userRepository.findAll();
     }
 
     @Override
     public void deleteUser(int id) {
-        userStorage.deleteUser(id);
+        userRepository.deleteById(id);
     }
 }

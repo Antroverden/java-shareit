@@ -5,8 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.CommentDtoWithName;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -21,6 +25,7 @@ public class ItemController {
 
     ItemService itemService;
     ItemMapper itemMapper;
+    CommentMapper commentMapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,18 +43,31 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto getItemById(@PathVariable int itemId) {
-        return itemMapper.toDto(itemService.getItemById(itemId));
+    public ItemDto getItemById(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
+        Item item = itemService.getItemById(itemId);
+        if (item.getOwner().getId().equals(userId)) {
+            return itemMapper.toDtoWithLastAndNextBooking(item);
+        }
+        return itemMapper.toDto(item);
     }
 
     @GetMapping
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.getItems(ownerId).stream().map(itemMapper::toDto).collect(Collectors.toList());
+        return itemService.getItems(ownerId).stream()
+                .map(itemMapper::toDtoWithLastAndNextBooking).collect(Collectors.toList());
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
         return itemService.searchItems(text).stream().map(itemMapper::toDto).collect(Collectors.toList());
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoWithName addCommentToItem(@Valid @RequestBody CommentDto commentDto, @PathVariable int itemId,
+                                               @RequestHeader("X-Sharer-User-Id") int userId) {
+        commentDto.setItemId(itemId);
+        commentDto.setAuthorId(userId);
+        return commentMapper.toDto(itemService.addCommentToItem(commentMapper.toComment(commentDto)));
     }
 
     @DeleteMapping("/{itemId}")
