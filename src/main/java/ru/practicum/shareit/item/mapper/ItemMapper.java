@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.dto.LightBooking;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.dto.BookingWithIdsDto;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDtoWithName;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -20,8 +20,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.shareit.booking.Booking.Status.APPROVED;
-import static ru.practicum.shareit.booking.Booking.Status.WAITING;
+import static ru.practicum.shareit.booking.model.Status.APPROVED;
+import static ru.practicum.shareit.booking.model.Status.WAITING;
 
 @Component
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -47,13 +47,13 @@ public class ItemMapper {
                 LocalDateTime.now(), item.getId(), List.of(WAITING, APPROVED));
         Booking nextBooking = bookingRepository.findFirstByStartAfterAndItem_IdAndStatusInOrderByStartAsc(
                 LocalDateTime.now(), item.getId(), List.of(WAITING, APPROVED));
-        LightBooking lastBook = null;
-        LightBooking nextBook = null;
+        BookingWithIdsDto lastBook = null;
+        BookingWithIdsDto nextBook = null;
         if (lastBooking != null) {
-            lastBook = new LightBooking(lastBooking.getId(), lastBooking.getBooker().getId());
+            lastBook = new BookingWithIdsDto(lastBooking.getId(), lastBooking.getBooker().getId());
         }
         if (nextBooking != null) {
-            nextBook = new LightBooking(nextBooking.getId(), nextBooking.getBooker().getId());
+            nextBook = new BookingWithIdsDto(nextBooking.getId(), nextBooking.getBooker().getId());
         }
         List<CommentDtoWithName> comments = commentRepository.findAllByItem_Id(item.getId()).stream()
                 .map(commentMapper::toDto).collect(Collectors.toList());

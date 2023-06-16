@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.BookingDtoFull;
+import ru.practicum.shareit.booking.dto.BookingWithIdsFullDto;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
@@ -20,15 +20,17 @@ public class BookingMapper {
     UserService userService;
     ItemService itemService;
 
-    public BookingDtoFull toDto(Booking booking) {
-        return new BookingDtoFull(booking.getId(), booking.getStart(), booking.getEnd(), booking.getItem(),
-                booking.getBooker(), booking.getStatus());
+    public BookingDto toDto(Booking booking) {
+        return BookingDto.builder().id(booking.getId()).start(booking.getStart()).end(booking.getEnd())
+                .item(booking.getItem()).booker(booking.getBooker()).status(booking.getStatus()).build();
     }
 
-    public Booking toBooking(BookingDto bookingDto) {
-        Item item = bookingDto.getItemId() == null ? null : itemService.getItemById(bookingDto.getItemId());
-        User booker = userService.getUserById(bookingDto.getBookerId());
-        return new Booking(bookingDto.getId(), bookingDto.getStart(), bookingDto.getEnd(), item,
-                booker, bookingDto.getStatus());
+    public Booking toBooking(BookingWithIdsFullDto bookingWithIdsFullDto) {
+        Item item = bookingWithIdsFullDto.getItemId() == null ?
+                null : itemService.getItemById(bookingWithIdsFullDto.getItemId());
+        User booker = userService.getUserById(bookingWithIdsFullDto.getBookerId());
+        return Booking.builder().id(bookingWithIdsFullDto.getId()).start(bookingWithIdsFullDto.getStart())
+                .end(bookingWithIdsFullDto.getEnd()).item(item).booker(booker).status(bookingWithIdsFullDto.getStatus())
+                .build();
     }
 }

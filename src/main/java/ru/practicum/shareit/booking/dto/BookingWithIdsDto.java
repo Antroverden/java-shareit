@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class LightBooking {
+public class BookingWithIdsDto {
     int id;
     int bookerId;
 }

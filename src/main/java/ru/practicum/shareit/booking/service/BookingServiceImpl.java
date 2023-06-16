@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -14,7 +14,7 @@ import ru.practicum.shareit.user.service.UserService;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.shareit.booking.Booking.Status.*;
+import static ru.practicum.shareit.booking.model.Status.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class BookingServiceImpl implements BookingService {
     UserService userService;
 
     @Override
-    public Booking addBooking(Booking booking) {
+    public Booking add(Booking booking) {
         Integer ownerId = booking.getItem().getOwner().getId();
         if (booking.getBooker().getId().equals(booking.getItem().getOwner().getId())) {
             throw new NotFoundException("Юзер с айди " + ownerId + "является владельцем данной вещи");
@@ -40,16 +40,14 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking updateBooking(Booking booking) {
-        Booking bookingFromDB = bookingRepository.findById(booking.getId())
-                .orElseThrow(() -> new NotFoundException("Бронирование не найдено"));
+    public Booking update(Booking booking) {
+        Booking bookingFromDB = bookingRepository.findById(booking.getId()).orElseThrow(
+                () -> new NotFoundException("Бронирования с айди " + booking.getId() + "не существует"));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
         if (!(booking.getBooker().getId().equals(ownerId))) {
-            throw new NotFoundException(
-                    "Юзер с айди " + ownerId + "не является владельцем данной вещи");
+            throw new NotFoundException("Юзер с айди " + ownerId + "не является владельцем данной вещи");
         }
-        if (booking.getStatus() != null && booking.getStatus() == APPROVED
-                && bookingFromDB.getStatus() == APPROVED) {
+        if (booking.getStatus() != null && booking.getStatus() == APPROVED && bookingFromDB.getStatus() == APPROVED) {
             throw new BadRequestException("Юзер с айди " + ownerId + "уже одобрил бронирование данной вещи");
         }
         bookingFromDB.setStatus(booking.getStatus());
@@ -57,7 +55,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Booking getBookingById(int id, Integer userId) {
+    public Booking getById(int id, Integer userId) {
         Booking bookingFromDB = bookingRepository.findById(id).orElseThrow(
                 () -> new NotFoundException("Бронирования с айди " + id + "не существует"));
         Integer ownerId = bookingFromDB.getItem().getOwner().getId();
@@ -70,7 +68,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getBookings(int userId, String state, boolean getForOwner) {
+    public List<Booking> getAll(int userId, String state, boolean getForOwner) {
         userService.getUserById(userId);
         LocalDateTime now;
         switch (state) {

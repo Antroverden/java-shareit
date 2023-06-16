@@ -1,15 +1,15 @@
 package ru.practicum.shareit.booking.service;
 
-import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
 
 public interface BookingService {
-    Booking addBooking(Booking booking);
+    Booking add(Booking booking);
 
-    Booking updateBooking(Booking booking);
+    Booking update(Booking booking);
 
-    Booking getBookingById(int id, Integer userId);
+    Booking getById(int id, Integer userId);
 
-    List<Booking> getBookings(int userId, String state, boolean getForOwner);
+    List<Booking> getAll(int userId, String state, boolean getForOwner);
 }

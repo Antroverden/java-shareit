@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.shareit.booking.dto.LightBooking;
+import ru.practicum.shareit.booking.dto.BookingWithIdsDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class ItemDto {
     Boolean available;
     int ownerId;
     Integer requestId;
-    LightBooking lastBooking;
-    LightBooking nextBooking;
+    BookingWithIdsDto lastBooking;
+    BookingWithIdsDto nextBooking;
     List<CommentDtoWithName> comments;
 }
