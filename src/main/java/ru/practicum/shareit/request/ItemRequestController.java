@@ -40,9 +40,9 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestDto> getItemRequests(@RequestHeader("X-Sharer-User-Id") int userId,
                                                 @RequestParam(value = "from", required = false)
-                                                @Min(value = 0) int from,
+                                                @Min(value = 0) Integer from,
                                                 @RequestParam(value = "size", required = false)
-                                                @Min(value = 1) int size) {
+                                                @Min(value = 1) Integer size) {
         return itemRequestMapper.toDtos(itemRequestService.getItemRequests(userId, from, size));
     }
 

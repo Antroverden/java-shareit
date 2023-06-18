@@ -65,11 +65,11 @@ public class ItemRequestServiceImpl {
         return itemRequestRepository.findAllByRequestor_Id(userId);
     }
 
-    public List<ItemRequest> getItemRequests(int userId, int from, int size) {
+    public List<ItemRequest> getItemRequests(Integer userId, Integer from, Integer size) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Юзера с айди " + userId + "не существует");
         }
-        return itemRequestRepository.findAllByRequestor_Id(userId);
+        return itemRequestRepository.findAll();
     }
 
 
