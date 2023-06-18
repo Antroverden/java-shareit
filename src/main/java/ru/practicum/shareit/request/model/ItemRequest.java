@@ -1,12 +1,14 @@
 package ru.practicum.shareit.request.model;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +24,5 @@ public class ItemRequest {
     @ManyToOne
     @JoinColumn(name = "requestor_id")
     User requestor;
-    @CreationTimestamp
-    LocalDate created;
+    LocalDateTime created;
 }
