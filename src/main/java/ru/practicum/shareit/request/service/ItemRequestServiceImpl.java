@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -46,6 +47,9 @@ public class ItemRequestServiceImpl {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("Юзера с айди " + userId + "не существует");
         }
-        return itemRequestRepository.findAll();
+        if (from != null && size != null) {
+            return itemRequestRepository.findAllByRequestor_Id(userId, PageRequest.of(from, size)).getContent();
+        }
+        return itemRequestRepository.findAllByRequestor_Id(userId);
     }
 }

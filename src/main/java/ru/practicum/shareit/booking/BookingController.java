@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingWithIdsFullDto;
@@ -11,6 +12,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 import static ru.practicum.shareit.booking.model.Status.APPROVED;
@@ -20,6 +22,7 @@ import static ru.practicum.shareit.booking.model.Status.REJECTED;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Validated
 public class BookingController {
 
     BookingService bookingService;
@@ -52,14 +55,24 @@ public class BookingController {
     @GetMapping
     public List<BookingDto> getBookings(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader("X-Sharer-User-Id") int bookerId) {
-        return bookingMapper.toDto(bookingService.getAll(bookerId, state, false));
+            @RequestHeader("X-Sharer-User-Id") int bookerId,
+            @RequestParam(value = "from", required = false)
+            @Min(value = 0) Integer from,
+            @RequestParam(value = "size", required = false)
+            @Min(value = 1) Integer size) {
+        return bookingMapper.toDto(bookingService.getAll(bookerId, state, false, from, size));
     }
 
     @GetMapping("/owner")
     public List<BookingDto> getBookingsWithInfoOfItems(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return bookingMapper.toDto(bookingService.getAll(ownerId, state, true));
+            @RequestHeader("X-Sharer-User-Id") int ownerId,
+            @RequestParam(value = "from", required = false)
+            @Min(value = 0) Integer from,
+            @RequestParam(value = "size", required = false)
+            @Min(value = 1) Integer size) {
+        return bookingMapper.toDto(bookingService.getAll(ownerId, state, true, from, size));
     }
 }
+
+

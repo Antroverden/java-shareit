@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.storage.BookingRepository;
@@ -68,13 +69,22 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAll(int userId, String state, boolean getForOwner) {
+    public List<Booking> getAll(int userId, String state, boolean getForOwner, Integer from, Integer size) {
         userService.getUserById(userId);
         LocalDateTime now;
         switch (state) {
             case "ALL":
-                if (getForOwner) return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
-                else return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
+                if (getForOwner) {
+                    if (from != null && size != null) {
+                        return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId, PageRequest.of(from, size)).getContent();
+                    }
+                    return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
+                } else {
+                    if (from != null && size != null) {
+                        return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId, PageRequest.of(from, size)).getContent();
+                    }
+                    return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
+                }
             case "WAITING":
                 if (getForOwner) {
                     return bookingRepository.findAllByItem_Owner_IdAndStatusOrderByStartDesc(userId, WAITING);
