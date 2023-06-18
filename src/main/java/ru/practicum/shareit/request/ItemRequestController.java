@@ -29,7 +29,8 @@ public class ItemRequestController {
     public ItemRequestDto addItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
                                          @RequestHeader("X-Sharer-User-Id") int userId) {
         itemRequestDto.setRequestorId(userId);
-        return itemRequestMapper.toDto(itemRequestService.addItemRequest(itemRequestMapper.toItemRequest(itemRequestDto)));
+        return itemRequestMapper.toDto(itemRequestService.addItemRequest(itemRequestMapper
+                .toItemRequest(itemRequestDto)));
     }
 
     @GetMapping
@@ -47,28 +48,8 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto getItemRequestById(@PathVariable int requestId, @RequestHeader("X-Sharer-User-Id") int userId) {
+    public ItemRequestDto getItemRequestById(@PathVariable int requestId,
+                                             @RequestHeader("X-Sharer-User-Id") int userId) {
         return itemRequestMapper.toDto(itemRequestService.getItemRequestById(requestId, userId));
     }
-
-//    @PatchMapping("/{itemId}")
-//    public ItemRequestDto updateItem(@Valid @PathVariable int itemId, @RequestBody ItemRequestDto itemRequestDto,
-//                                     @RequestHeader("X-Sharer-User-Id") int ownerId) {
-//        itemRequestDto.setId(itemId);
-//        return itemRequestMapper.toDto(itemRequestService.updateItem(itemRequestMapper.toItem(itemRequestDto)));
-//    }
-//
-//
-//
-//
-//    @GetMapping("/search")
-//    public List<ItemRequestDto> searchItems(@RequestParam String text) {
-//        return itemRequestMapper.toDto(itemRequestService.searchItems(text));
-//    }
-//
-//    @DeleteMapping("/{itemId}")
-//    public void deleteItem(@PathVariable int itemId) {
-//        itemRequestService.deleteItem(itemId);
-//    }
-
 }
