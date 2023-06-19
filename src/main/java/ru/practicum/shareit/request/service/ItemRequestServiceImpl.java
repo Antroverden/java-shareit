@@ -39,7 +39,8 @@ public class ItemRequestServiceImpl {
     public List<ItemRequest> getItemRequests(Integer userId, Integer from, Integer size) {
         userService.getUserById(userId);
         if (from != null && size != null) {
-            return itemRequestRepository.findAllByRequestor_IdNot(userId, PageRequest.of(from / size, size)).getContent();
+            return itemRequestRepository.findAllByRequestor_IdNot(userId, PageRequest.of(from / size, size))
+                    .getContent();
         }
         return itemRequestRepository.findAllByRequestor_Id(userId);
     }

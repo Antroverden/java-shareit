@@ -76,12 +76,14 @@ public class BookingServiceImpl implements BookingService {
             case "ALL":
                 if (getForOwner) {
                     if (from != null && size != null) {
-                        return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId, PageRequest.of(from / size, size)).getContent();
+                        return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId,
+                                PageRequest.of(from / size, size)).getContent();
                     }
                     return bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId);
                 } else {
                     if (from != null && size != null) {
-                        return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId, PageRequest.of(from / size, size)).getContent();
+                        return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId,
+                                PageRequest.of(from / size, size)).getContent();
                     }
                     return bookingRepository.findAllByBooker_IdOrderByStartDesc(userId);
                 }

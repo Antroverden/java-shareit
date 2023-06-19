@@ -27,7 +27,8 @@ public class ItemRequestMapper {
 
     public ItemRequestDto toDto(ItemRequest itemRequest) {
         List<ItemDto> itemDtos = itemMapper.toDto(itemRepository.findItemsByItemRequest_Id(itemRequest.getId()));
-        return new ItemRequestDto(itemRequest.getId(), itemRequest.getRequestor().getId(), itemRequest.getDescription(), itemRequest.getCreated(), itemDtos);
+        return new ItemRequestDto(itemRequest.getId(), itemRequest.getRequestor().getId(), itemRequest.getDescription(),
+                itemRequest.getCreated(), itemDtos);
     }
 
     public List<ItemRequestDto> toDtos(List<ItemRequest> itemRequest) {
