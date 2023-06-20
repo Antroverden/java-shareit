@@ -167,7 +167,7 @@ class UserServiceImplTest {
     @Test
     void deleteUser() {
         int id = 9;
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
         verify(userRepository).deleteById(id);
     }
 }
