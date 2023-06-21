@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() != null) {
             userFromDB.setEmail(user.getEmail());
         }
-        return userRepository.save(userFromDB);
+        return addUser(userFromDB);
     }
 
     @Override
