@@ -37,7 +37,6 @@ class ItemRequestMapperTest {
     @Mock
     private ItemMapper itemMapper;
 
-    // Test data
     private User requestor;
     private Item item;
     private ItemRequest itemRequest;
@@ -54,13 +53,10 @@ class ItemRequestMapperTest {
 
     @Test
     void testToDto() {
-        // Mock behavior
         when(itemRepository.findItemsByItemRequest_Id(itemRequest.getId())).thenReturn(List.of(item));
 
-        // Run method to test
         ItemRequestDto itemRequestDto = itemRequestMapper.toDto(itemRequest);
 
-        // Verify results
         assertEquals(itemRequest.getId(), itemRequestDto.getId());
         assertEquals(itemRequest.getRequestor().getId(), itemRequestDto.getRequestorId());
         assertEquals(itemRequest.getDescription(), itemRequestDto.getDescription());
@@ -69,29 +65,23 @@ class ItemRequestMapperTest {
 
     @Test
     void testToDtos() {
-        // Mock behavior
         List<ItemRequest> itemRequestList = Collections.singletonList(itemRequest);
         when(itemRepository.findItemsByItemRequest_Id(itemRequest.getId())).thenReturn(Collections.singletonList(item));
 
-        // Run method to test
         List<ItemRequestDto> itemRequestDtos = itemRequestMapper.toDtos(itemRequestList);
 
-        // Verify results
         assertEquals(itemRequestList.size(), itemRequestDtos.size());
         assertEquals(itemRequestList.get(0).getId(), itemRequestDtos.get(0).getId());
     }
 
     @Test
     void testToItemRequest() {
-        // Mock behavior
         ItemRequestDto itemRequestDto = new ItemRequestDto(itemRequest.getId(), requestor.getId(),
                 itemRequest.getDescription(), itemRequest.getCreated(), Collections.singletonList(itemDto));
         when(userService.getUserById(requestor.getId())).thenReturn(requestor);
 
-        // Run method to test
         ItemRequest actualItemRequest = itemRequestMapper.toItemRequest(itemRequestDto);
 
-        // Verify results
         assertEquals(itemRequestDto.getId(), actualItemRequest.getId());
         assertEquals(itemRequestDto.getRequestorId(), actualItemRequest.getRequestor().getId());
         assertEquals(itemRequestDto.getDescription(), actualItemRequest.getDescription());
