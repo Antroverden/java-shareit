@@ -40,7 +40,6 @@ class BookingControllerTest {
 
     @Test
     void testAddBooking() throws Exception {
-        BookingWithIdsFullDto bookingWithIdsFullDto = createSampleBookingWithIdsFullDto();
         BookingDto bookingDto = createSampleBookingDto();
 
         when(bookingMapper.toBooking(any(BookingWithIdsFullDto.class))).thenReturn(createSampleBooking());
@@ -55,7 +54,6 @@ class BookingControllerTest {
 
     @Test
     void testApproveOrRejectBooking() throws Exception {
-        BookingWithIdsFullDto bookingWithIdsFullDto = createSampleBookingWithIdsFullDto();
         BookingDto bookingDto = createSampleBookingDto();
 
         when(bookingMapper.toBooking(any(BookingWithIdsFullDto.class))).thenReturn(createSampleBooking());

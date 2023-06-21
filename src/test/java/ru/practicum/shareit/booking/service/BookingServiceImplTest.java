@@ -102,9 +102,7 @@ class BookingServiceImplTest {
         item.setAvailable(false);
         when(itemService.getItemById(booking.getItem().getId())).thenReturn(item);
 
-        assertThrows(BadRequestException.class, () -> {
-            bookingService.add(booking);
-        }, "Вещь недоступна");
+        assertThrows(BadRequestException.class, () -> bookingService.add(booking), "Вещь недоступна");
     }
 
     @Test
