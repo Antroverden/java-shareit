@@ -115,14 +115,6 @@ class BookingControllerTest {
                 .andExpect(content().json("[{\"id\": 1}]"));
     }
 
-
-    private BookingWithIdsFullDto createSampleBookingWithIdsFullDto() {
-        BookingWithIdsFullDto bookingWithIdsFullDto = new BookingWithIdsFullDto();
-        bookingWithIdsFullDto.setId(1);
-        bookingWithIdsFullDto.setItemId(1);
-        return bookingWithIdsFullDto;
-    }
-
     private BookingDto createSampleBookingDto() {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(1);
