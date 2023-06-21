@@ -288,7 +288,7 @@ public class IntegrationTests {
 
     @Test
     @Order(32)
-    public void ItemCreateByUser() throws Exception {
+    public void itemCreateByOtherUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Отвертка\",\"description\":\"Аккумуляторнаяотвертка\",\"available\":true}"))
