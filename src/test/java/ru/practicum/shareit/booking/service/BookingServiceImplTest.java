@@ -85,18 +85,14 @@ class BookingServiceImplTest {
         item.setOwner(owner);
         booking.setBooker(owner);
 
-        assertThrows(NotFoundException.class, () -> {
-            bookingService.add(booking);
-        }, "Юзер с айди" + owner.getId() + " является владельцем данной вещи");
+        assertThrows(NotFoundException.class, () -> bookingService.add(booking), "Юзер с айди" + owner.getId() + " является владельцем данной вещи");
     }
 
     @Test
     void addBookingWithInvalidDatesException() {
         booking.setEnd(booking.getStart().minusDays(1));
 
-        assertThrows(BadRequestException.class, () -> {
-            bookingService.add(booking);
-        }, "Вещь недоступна");
+        assertThrows(BadRequestException.class, () -> bookingService.add(booking), "Вещь недоступна");
     }
 
     @Test
@@ -237,7 +233,7 @@ class BookingServiceImplTest {
         int from = 0;
         int size = 5;
         when(userService.getUserById(userId)).thenReturn(user);
-        when(bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId, PageRequest.of(from / size, size))).thenReturn(new PageImpl<>(bookings));
+        when(bookingRepository.findAllByItem_Owner_IdOrderByStartDesc(userId, PageRequest.of(0, size))).thenReturn(new PageImpl<>(bookings));
 
         List<Booking> result = bookingService.getAll(userId, "ALL", true, from, size);
         assertThat(result).isEqualTo(bookings);
@@ -252,7 +248,7 @@ class BookingServiceImplTest {
         int from = 0;
         int size = 5;
         when(userService.getUserById(userId)).thenReturn(booker);
-        when(bookingRepository.findAllByBooker_IdOrderByStartDesc(userId, PageRequest.of(from / size, size))).thenReturn(new PageImpl<>(bookings));
+        when(bookingRepository.findAllByBooker_IdOrderByStartDesc(userId, PageRequest.of(0, size))).thenReturn(new PageImpl<>(bookings));
 
         List<Booking> result = bookingService.getAll(userId, "ALL", false, from, size);
         assertThat(result).isEqualTo(bookings);

@@ -41,8 +41,6 @@ public class ItemMapperTest {
     void testToDtoWithLastAndNextBooking() {
         User owner = new User(1, "John Doe", "john@example.com");
         Item item = new Item(1, "Item", "Description", true, owner, null);
-        CommentDtoWithName commentDto = new CommentDtoWithName(1, "Comment", 1, "Author",
-                LocalDateTime.now());
 
         when(commentRepository.findAllByItem_Id(item.getId())).thenReturn(Collections.emptyList());
         when(bookingRepository.findFirstByStartBeforeAndItem_IdAndStatusInOrderByEndDesc(any(), any(), any())).thenReturn(null);
