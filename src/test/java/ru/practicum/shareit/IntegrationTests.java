@@ -12,7 +12,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -23,9 +22,10 @@ public class IntegrationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
     @Test
     @Order(1)
-    public void User1create1() throws Exception {
+    public void userCreate() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\",\"email\":\"user@user.com\"}"))
                 .andExpect(status().isCreated());
@@ -33,7 +33,7 @@ public class IntegrationTests {
 
     @Test
     @Order(2)
-    public void User2createfailduplicateemail2() throws Exception {
+    public void userCreateFailDuplicateEmail() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\",\"email\":\"user@user.com\"}"))
                 .andExpect(status().isConflict());
@@ -41,7 +41,7 @@ public class IntegrationTests {
 
     @Test
     @Order(3)
-    public void Usercreatefailnoemail3() throws Exception {
+    public void userCreateFailNoEmail() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\"}"))
                 .andExpect(status().isBadRequest());
@@ -49,7 +49,7 @@ public class IntegrationTests {
 
     @Test
     @Order(4)
-    public void Usercreatefailinvalidemail4() throws Exception {
+    public void userCreateFailInvalidEmail() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\",\"email\":\"user.com\"}"))
                 .andExpect(status().isBadRequest());
@@ -57,7 +57,7 @@ public class IntegrationTests {
 
     @Test
     @Order(5)
-    public void User1update5() throws Exception {
+    public void userUpdate() throws Exception {
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"update\",\"email\":\"update@user.com\"}"))
                 .andExpect(status().isOk());
@@ -65,7 +65,7 @@ public class IntegrationTests {
 
     @Test
     @Order(6)
-    public void User3create6() throws Exception {
+    public void userAnotherCreate() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\",\"email\":\"user@user.com\"}"))
                 .andExpect(status().isCreated());
@@ -73,7 +73,7 @@ public class IntegrationTests {
 
     @Test
     @Order(7)
-    public void User1updatename7() throws Exception {
+    public void userUpdateName() throws Exception {
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"updateName\"}"))
                 .andExpect(status().isOk());
@@ -81,7 +81,7 @@ public class IntegrationTests {
 
     @Test
     @Order(8)
-    public void User1updateemail8() throws Exception {
+    public void userUpdateEmail() throws Exception {
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"email\":\"updateName@user.com\"}"))
                 .andExpect(status().isOk());
@@ -89,7 +89,7 @@ public class IntegrationTests {
 
     @Test
     @Order(9)
-    public void User1updatewithsameemail9() throws Exception {
+    public void userUpdateWithSameEmail() throws Exception {
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"email\":\"updateName@user.com\"}"))
                 .andExpect(status().isOk());
@@ -97,7 +97,7 @@ public class IntegrationTests {
 
     @Test
     @Order(10)
-    public void User1nameupdatefailemailexists10() throws Exception {
+    public void usernameUpdateFailEmailExists() throws Exception {
         mockMvc.perform(patch("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"email\":\"user@user.com\"}"))
                 .andExpect(status().isConflict());
@@ -105,7 +105,7 @@ public class IntegrationTests {
 
     @Test
     @Order(11)
-    public void User1getupdated11() throws Exception {
+    public void userGetUpdated() throws Exception {
         mockMvc.perform(get("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -113,7 +113,7 @@ public class IntegrationTests {
 
     @Test
     @Order(12)
-    public void User3get12() throws Exception {
+    public void userGet() throws Exception {
         mockMvc.perform(get("/users/3")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -121,7 +121,7 @@ public class IntegrationTests {
 
     @Test
     @Order(13)
-    public void User100getunkonwn13() throws Exception {
+    public void userGetUnknown() throws Exception {
         mockMvc.perform(get("/users/100")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -129,7 +129,7 @@ public class IntegrationTests {
 
     @Test
     @Order(14)
-    public void User3delete14() throws Exception {
+    public void userDelete() throws Exception {
         mockMvc.perform(delete("/users/3")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -137,7 +137,7 @@ public class IntegrationTests {
 
     @Test
     @Order(15)
-    public void User4createafterdelete15() throws Exception {
+    public void userCreateAfterDelete() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"user\",\"email\":\"user@user.com\"}"))
                 .andExpect(status().isCreated());
@@ -145,7 +145,7 @@ public class IntegrationTests {
 
     @Test
     @Order(16)
-    public void Usergetall16() throws Exception {
+    public void userGetAll() throws Exception {
         mockMvc.perform(get("/users/")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -153,7 +153,7 @@ public class IntegrationTests {
 
     @Test
     @Order(17)
-    public void Item1createbyuser117() throws Exception {
+    public void itemCreateByUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Дрель\",\"description\":\"Простаядрель\",\"available\":true}"))
@@ -162,7 +162,7 @@ public class IntegrationTests {
 
     @Test
     @Order(18)
-    public void ItemcreatewithoutXSharerUserId18() throws Exception {
+    public void itemCreateWithoutXSharerUserId() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Дрель\",\"description\":\"Простаядрель\",\"available\":true}"))
@@ -171,7 +171,7 @@ public class IntegrationTests {
 
     @Test
     @Order(19)
-    public void Itemcreatewithnotfounduser19() throws Exception {
+    public void itemCreateWithNotFoundUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "10")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Дрель\",\"description\":\"Простаядрель\",\"available\":true}"))
@@ -180,7 +180,7 @@ public class IntegrationTests {
 
     @Test
     @Order(20)
-    public void Itemcreatewithoutavailable20() throws Exception {
+    public void itemCreateWithoutAvailable() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "3")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Отвертка\",\"description\":\"Аккумуляторнаяотвертка\"}"))
@@ -189,7 +189,7 @@ public class IntegrationTests {
 
     @Test
     @Order(21)
-    public void Itemcreatewithemptyname21() throws Exception {
+    public void itemCreateWithEmptyName() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "3")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"\",\"description\":\"Аккумуляторнаяотвертка\",\"available\":true}"))
@@ -198,7 +198,7 @@ public class IntegrationTests {
 
     @Test
     @Order(22)
-    public void Itemcreatewithemptydescription22() throws Exception {
+    public void itemCreateWithEmptyDescription() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "3")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Отвертка\",\"available\":true}"))
@@ -207,7 +207,7 @@ public class IntegrationTests {
 
     @Test
     @Order(23)
-    public void item1update23() throws Exception {
+    public void itemUpdate() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"id\":1,\"name\":\"Дрель+\",\"description\":\"Аккумуляторнаядрель\",\"available\":false}"))
@@ -216,7 +216,7 @@ public class IntegrationTests {
 
     @Test
     @Order(24)
-    public void item1updatewithoutXSharerUserId24() throws Exception {
+    public void itemUpdateWithoutXSharerUserId() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"id\":1,\"name\":\"Дрель\",\"description\":\"Простаядрель\",\"available\":false}"))
@@ -225,7 +225,7 @@ public class IntegrationTests {
 
     @Test
     @Order(25)
-    public void item1updatewithotheruser325() throws Exception {
+    public void itemUpdateWithoutUser() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "3")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Дрель\",\"description\":\"Простаядрель\",\"available\":false}"))
@@ -234,7 +234,7 @@ public class IntegrationTests {
 
     @Test
     @Order(26)
-    public void item1updateavailable26() throws Exception {
+    public void itemUpdateAvailable() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"available\":true}"))
@@ -243,7 +243,7 @@ public class IntegrationTests {
 
     @Test
     @Order(27)
-    public void item1updatedescription27() throws Exception {
+    public void itemUpdateDescription() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"description\":\"Аккумуляторнаядрель+аккумулятор\"}"))
@@ -252,7 +252,7 @@ public class IntegrationTests {
 
     @Test
     @Order(28)
-    public void item1updatename28() throws Exception {
+    public void itemUpdateName() throws Exception {
         mockMvc.perform(patch("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Аккумуляторнаядрель\"}"))
@@ -261,7 +261,7 @@ public class IntegrationTests {
 
     @Test
     @Order(29)
-    public void Item1getfromowneruser129() throws Exception {
+    public void itemGetFromOwnerUser() throws Exception {
         mockMvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -270,7 +270,7 @@ public class IntegrationTests {
 
     @Test
     @Order(30)
-    public void Item1getfromuser430() throws Exception {
+    public void itemGetFromUser() throws Exception {
         mockMvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -279,7 +279,7 @@ public class IntegrationTests {
 
     @Test
     @Order(31)
-    public void Item100getfromuser431() throws Exception {
+    public void itemGetFromAnotherUser() throws Exception {
         mockMvc.perform(get("/items/100")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -288,7 +288,7 @@ public class IntegrationTests {
 
     @Test
     @Order(32)
-    public void Item2createbyuser432() throws Exception {
+    public void ItemCreateByUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Отвертка\",\"description\":\"Аккумуляторнаяотвертка\",\"available\":true}"))
@@ -297,7 +297,7 @@ public class IntegrationTests {
 
     @Test
     @Order(33)
-    public void Item3createbyuser433() throws Exception {
+    public void itemCreateByAnotherUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"КлейМомент\",\"description\":\"ТюбиксуперклеямаркиМомент\",\"available\":true}"))
@@ -306,7 +306,7 @@ public class IntegrationTests {
 
     @Test
     @Order(34)
-    public void Itemgetalluser134() throws Exception {
+    public void itemGetAllForUser() throws Exception {
         mockMvc.perform(get("/items/")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -315,7 +315,7 @@ public class IntegrationTests {
 
     @Test
     @Order(35)
-    public void Itemgetalluser435() throws Exception {
+    public void itemGetAllUser() throws Exception {
         mockMvc.perform(get("/items/")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -324,7 +324,7 @@ public class IntegrationTests {
 
     @Test
     @Order(36)
-    public void Itemsearchаккумуляторная36() throws Exception {
+    public void itemSearch() throws Exception {
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
                         .param("text", "аккУМУляторная")
@@ -334,7 +334,7 @@ public class IntegrationTests {
 
     @Test
     @Order(37)
-    public void item2updatesetunavailable37() throws Exception {
+    public void itemUpdateSetUnavailable() throws Exception {
         mockMvc.perform(patch("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"available\":false}"))
@@ -343,7 +343,7 @@ public class IntegrationTests {
 
     @Test
     @Order(38)
-    public void Itemsearchдрель38() throws Exception {
+    public void itemAnotherSearch() throws Exception {
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
                         .param("text", "дРелЬ")
@@ -353,7 +353,7 @@ public class IntegrationTests {
 
     @Test
     @Order(39)
-    public void Itemsearchаккумуляторнаяavailable39() throws Exception {
+    public void itemSearchAvailable() throws Exception {
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
                         .param("text", "аккУМУляторная")
@@ -363,7 +363,7 @@ public class IntegrationTests {
 
     @Test
     @Order(40)
-    public void item2updatesetavailable40() throws Exception {
+    public void itemUpdateSetAvailable() throws Exception {
         mockMvc.perform(patch("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"available\":true}"))
@@ -372,7 +372,7 @@ public class IntegrationTests {
 
     @Test
     @Order(41)
-    public void Itemsearchотвертка41() throws Exception {
+    public void itemSearchAndAnother() throws Exception {
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
                         .param("text", "оТверТ")
@@ -382,7 +382,7 @@ public class IntegrationTests {
 
     @Test
     @Order(42)
-    public void Itemsearchempty42() throws Exception {
+    public void itemSearchEmpty() throws Exception {
         mockMvc.perform(get("/items/search")
                         .header("X-Sharer-User-Id", "1")
                         .param("text", "")
@@ -392,7 +392,7 @@ public class IntegrationTests {
 
     @Test
     @Order(43)
-    public void item2updatesetunavailable43() throws Exception {
+    public void itemUpdateSetUnavailableAnother() throws Exception {
         mockMvc.perform(patch("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"available\":false}"))
@@ -401,7 +401,7 @@ public class IntegrationTests {
 
     @Test
     @Order(44)
-    public void Bookingcreatefromuser1toitem2unavailable44() throws Exception {
+    public void bookingCreateFromUserToItemUnavailable() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -410,7 +410,7 @@ public class IntegrationTests {
 
     @Test
     @Order(45)
-    public void item2updatesetavailable45() throws Exception {
+    public void itemUpdateSetAvailableAnother() throws Exception {
         mockMvc.perform(patch("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"available\":true}"))
@@ -419,7 +419,7 @@ public class IntegrationTests {
 
     @Test
     @Order(46)
-    public void BookingcreatefailedbywronguserId46() throws Exception {
+    public void bookingCreateFailedByWrongUserId() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "100")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -428,7 +428,7 @@ public class IntegrationTests {
 
     @Test
     @Order(47)
-    public void BookingcreatefailedbynotfounditemId47() throws Exception {
+    public void bookingCreateFailedByNotFoundItemId() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":200,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -437,7 +437,7 @@ public class IntegrationTests {
 
     @Test
     @Order(48)
-    public void Bookingcreatefailedbyendinpast48() throws Exception {
+    public void bookingCreateFailedByEndInPast() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-20T11:22:50\"}"))
@@ -446,7 +446,7 @@ public class IntegrationTests {
 
     @Test
     @Order(49)
-    public void Bookingcreatefailedbyendbeforestart49() throws Exception {
+    public void bookingCreateFailedByEndBeforeStart() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-22T11:22:50\"}"))
@@ -455,7 +455,7 @@ public class IntegrationTests {
 
     @Test
     @Order(50)
-    public void Bookingcreatefailedbystartequalend50() throws Exception {
+    public void bookingCreateFailedByStartEqualEnd() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -464,7 +464,7 @@ public class IntegrationTests {
 
     @Test
     @Order(51)
-    public void Bookingcreatefailedbystartequalnull51() throws Exception {
+    public void bookingCreateFailedByStartEqualNull() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":null,\"end\":\"2023-06-22T11:22:50\"}"))
@@ -473,7 +473,7 @@ public class IntegrationTests {
 
     @Test
     @Order(52)
-    public void Bookingcreatefailedbyendequalnull52() throws Exception {
+    public void bookingCreateFailedByEndEqualNull() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-20T11:22:50\",\"end\":null}"))
@@ -482,7 +482,7 @@ public class IntegrationTests {
 
     @Test
     @Order(53)
-    public void Bookingcreatefailedbystartinpast53() throws Exception {
+    public void bookingCreateFailedByStartInPast() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-20T11:22:50\",\"end\":\"2023-06-22T11:22:50\"}"))
@@ -491,7 +491,7 @@ public class IntegrationTests {
 
     @Test
     @Order(54)
-    public void Booking1createfromuser1toitem2current54() throws Exception {
+    public void bookingCreateFromAnotherUserToItemCurrent() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-24T11:22:50\",\"end\":\"2023-06-25T11:22:50\"}"))
@@ -500,7 +500,7 @@ public class IntegrationTests {
 
     @Test
     @Order(55)
-    public void Bookingsetapprovebyownercurrent55() throws Exception {
+    public void bookingSetApproveByOwnerCurrent() throws Exception {
         mockMvc.perform(patch("/bookings/1")
                         .header("X-Sharer-User-Id", "4")
                         .param("approved", "true")
@@ -510,7 +510,7 @@ public class IntegrationTests {
 
     @Test
     @Order(56)
-    public void Booking2createfromuser1toitem256() throws Exception {
+    public void bookingCreateFromUserToItem() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -519,7 +519,7 @@ public class IntegrationTests {
 
     @Test
     @Order(57)
-    public void Booking2getbyuser1booker57() throws Exception {
+    public void bookingGetByUserBooker() throws Exception {
         mockMvc.perform(get("/bookings/2")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -528,7 +528,7 @@ public class IntegrationTests {
 
     @Test
     @Order(58)
-    public void Booking2getbyuser4owner58() throws Exception {
+    public void bookingGetByUserOwner() throws Exception {
         mockMvc.perform(get("/bookings/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -537,7 +537,7 @@ public class IntegrationTests {
 
     @Test
     @Order(59)
-    public void Bookinggetallforwronguser10059() throws Exception {
+    public void bookingGetAllForWrongUser() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "100")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -546,7 +546,7 @@ public class IntegrationTests {
 
     @Test
     @Order(60)
-    public void Bookinggetallforwrongowneruser10060() throws Exception {
+    public void bookingGetAllForWrongOwnerUser() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "100")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -555,7 +555,7 @@ public class IntegrationTests {
 
     @Test
     @Order(61)
-    public void Bookinggetallforuser161() throws Exception {
+    public void bookingGetAllForUser() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -564,7 +564,7 @@ public class IntegrationTests {
 
     @Test
     @Order(62)
-    public void Bookinggetallforuser1byALLstate62() throws Exception {
+    public void bookingGetAllForUserByAllstate() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "ALL")
@@ -574,7 +574,7 @@ public class IntegrationTests {
 
     @Test
     @Order(63)
-    public void Bookinggetallforuser1byFUTUREstate63() throws Exception {
+    public void bookingGetAllForUserByFutureState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "FUTURE")
@@ -584,7 +584,7 @@ public class IntegrationTests {
 
     @Test
     @Order(64)
-    public void Bookinggetallforuser1bywrongstate64() throws Exception {
+    public void bookingGetAllForUserByWrongState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "UNSUPPORTED_STATUS")
@@ -594,7 +594,7 @@ public class IntegrationTests {
 
     @Test
     @Order(65)
-    public void Bookinggetallforowner65() throws Exception {
+    public void bookingGetAllForOwner() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -603,7 +603,7 @@ public class IntegrationTests {
 
     @Test
     @Order(66)
-    public void BookinggetallforownerbyALLstate66() throws Exception {
+    public void bookingGetAllForOwnerByAllState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "ALL")
@@ -613,7 +613,7 @@ public class IntegrationTests {
 
     @Test
     @Order(67)
-    public void BookinggetallforownerbyFUTUREstate67() throws Exception {
+    public void bookingGetAllForOwnerByFutureState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "FUTURE")
@@ -623,7 +623,7 @@ public class IntegrationTests {
 
     @Test
     @Order(68)
-    public void Bookinggetallforownerbywrongstate68() throws Exception {
+    public void bookingGetAllForOwnerByWrongState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "UNSUPPORTED_STATUS")
@@ -633,7 +633,7 @@ public class IntegrationTests {
 
     @Test
     @Order(69)
-    public void Booking1000getfromuser469() throws Exception {
+    public void bookingGetFromUser() throws Exception {
         mockMvc.perform(get("/bookings/1000")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -642,7 +642,7 @@ public class IntegrationTests {
 
     @Test
     @Order(70)
-    public void User5create70() throws Exception {
+    public void userYetAnotherCreate() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"other\",\"email\":\"other@other.com\"}"))
                 .andExpect(status().isCreated());
@@ -650,7 +650,7 @@ public class IntegrationTests {
 
     @Test
     @Order(71)
-    public void Booking1getfromuser571() throws Exception {
+    public void bookingGetFromUserAnother() throws Exception {
         mockMvc.perform(get("/bookings/1")
                         .header("X-Sharer-User-Id", "5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -659,7 +659,7 @@ public class IntegrationTests {
 
     @Test
     @Order(72)
-    public void Booking2changestatusfromuser5fail72() throws Exception {
+    public void bookingChangeStatusFromUser() throws Exception {
         mockMvc.perform(patch("/bookings/2")
                         .header("X-Sharer-User-Id", "5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -668,7 +668,7 @@ public class IntegrationTests {
 
     @Test
     @Order(73)
-    public void Booking2changestatusbyuser1booker73() throws Exception {
+    public void bookingChangeStatusByUserBooker() throws Exception {
         mockMvc.perform(patch("/bookings/2")
                         .header("X-Sharer-User-Id", "1")
                         .param("approved", "true")
@@ -678,7 +678,7 @@ public class IntegrationTests {
 
     @Test
     @Order(74)
-    public void Booking2setapprovebyuser4owner74() throws Exception {
+    public void bookingSetApproveByUserOwner() throws Exception {
         mockMvc.perform(patch("/bookings/2")
                         .header("X-Sharer-User-Id", "4")
                         .param("approved", "true")
@@ -688,7 +688,7 @@ public class IntegrationTests {
 
     @Test
     @Order(75)
-    public void Booking2changestatusbyuser4ownerafterapprove75() throws Exception {
+    public void bookingChangeStatusByUserOwnerAfterApprove() throws Exception {
         mockMvc.perform(patch("/bookings/2")
                         .header("X-Sharer-User-Id", "4")
                         .param("approved", "true")
@@ -698,7 +698,7 @@ public class IntegrationTests {
 
     @Test
     @Order(76)
-    public void User6create76() throws Exception {
+    public void userCreateYetAnother() throws Exception {
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"practicum\",\"email\":\"practicum@yandex.ru\"}"))
                 .andExpect(status().isCreated());
@@ -706,7 +706,7 @@ public class IntegrationTests {
 
     @Test
     @Order(77)
-    public void Bookingcreatefromuser1toitem1failed77() throws Exception {
+    public void bookingCreateFromUserToItemFailed() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":1,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-24T11:22:50\"}"))
@@ -715,7 +715,7 @@ public class IntegrationTests {
 
     @Test
     @Order(80)
-    public void Booking4createfromuser5toitem280() throws Exception {
+    public void bookingCreateFromUserToAnotherItem() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "5")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
@@ -724,7 +724,7 @@ public class IntegrationTests {
 
     @Test
     @Order(82)
-    public void Item2getbyuser4ownerwithbookings82() throws Exception {
+    public void itemGetByUserOwnerWithBookings() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -733,7 +733,7 @@ public class IntegrationTests {
 
     @Test
     @Order(83)
-    public void Item2getbyuser1withoutbookings83() throws Exception {
+    public void itemGetByUserWithoutBookings() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -742,7 +742,7 @@ public class IntegrationTests {
 
     @Test
     @Order(84)
-    public void Item2getbyuser5withoutbookings84() throws Exception {
+    public void itemGetByAnotherUserWithoutBookings() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "5")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -751,7 +751,7 @@ public class IntegrationTests {
 
     @Test
     @Order(85)
-    public void Itemgetalluser4withbookings85() throws Exception {
+    public void itemGetAllUserWithBookings() throws Exception {
         mockMvc.perform(get("/items/")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -761,7 +761,7 @@ public class IntegrationTests {
 
     @Test
     @Order(87)
-    public void Bookinggetallforuser1byWAITINGstate87() throws Exception {
+    public void bookingGetAllForUserByWaitingState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "WAITING")
@@ -771,7 +771,7 @@ public class IntegrationTests {
 
     @Test
     @Order(88)
-    public void Bookinggetallforuser4ownerbyWAITINGstate88() throws Exception {
+    public void bookingGetAllForUserOwnerByWaitingState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "WAITING")
@@ -781,7 +781,7 @@ public class IntegrationTests {
 
     @Test
     @Order(89)
-    public void Booking6createfromuser1toitem2current89() throws Exception {
+    public void bookingCreateFromUserToItemCurrent() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-24T11:22:50\",\"end\":\"2023-06-25T11:22:50\"}"))
@@ -790,7 +790,7 @@ public class IntegrationTests {
 
     @Test
     @Order(91)
-    public void Bookinggetallforuser1byREJECTEDstate91() throws Exception {
+    public void bookingGetAllForUserByRejectedState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "REJECTED")
@@ -800,7 +800,7 @@ public class IntegrationTests {
 
     @Test
     @Order(92)
-    public void Bookinggetallforuser4ownerbyREJECTEDstate92() throws Exception {
+    public void bookingGetAllForUserByRejectedStateAnother() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "REJECTED")
@@ -810,7 +810,7 @@ public class IntegrationTests {
 
     @Test
     @Order(94)
-    public void Item4createbyuser694() throws Exception {
+    public void itemAnotherCreateByUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "6")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Кухонныйстол\",\"description\":\"Столдляпразднования\",\"available\":true}"))
@@ -819,7 +819,7 @@ public class IntegrationTests {
 
     @Test
     @Order(95)
-    public void Item1getfromuser1ownerwithoutcomments95() throws Exception {
+    public void itemGetFromUserOwnerWithoutComments() throws Exception {
         mockMvc.perform(get("/items/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -828,7 +828,7 @@ public class IntegrationTests {
 
     @Test
     @Order(99)
-    public void Item2getfromuser1withoutcomments99() throws Exception {
+    public void itemGetFromUserWithoutComments() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -837,7 +837,7 @@ public class IntegrationTests {
 
     @Test
     @Order(100)
-    public void Item2getfromuser4ownerwithoutcomments100() throws Exception {
+    public void itemGetFromAnotherUserOwnerWithoutComments() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -846,16 +846,16 @@ public class IntegrationTests {
 
     @Test
     @Order(101)
-    public void Commentfromuser4toitem1withoutbookingfailed101() throws Exception {
+    public void commentFromUserToItemWithoutBookingFailed() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "4")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"text\":\"Commentforitem1\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"text\":\"Comment for item 1\"}"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(102)
-    public void Commentfromuser1toitem2emptyfailed102() throws Exception {
+    public void commentFromUserToItemEmptyFailed() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"text\":\"\"}"))
@@ -864,7 +864,7 @@ public class IntegrationTests {
 
     @Test
     @Order(104)
-    public void Item2getbyuser1withcomments104() throws Exception {
+    public void itemGetByUserWithComments() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -873,7 +873,7 @@ public class IntegrationTests {
 
     @Test
     @Order(105)
-    public void Item2getbyuser4ownerwithcomments105() throws Exception {
+    public void itemGetByUserOwnerWithComments() throws Exception {
         mockMvc.perform(get("/items/2")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -882,16 +882,16 @@ public class IntegrationTests {
 
     @Test
     @Order(107)
-    public void Addcommenttoitem1fromuser5failedbyfuturebooking107() throws Exception {
+    public void addCommentToItemFromUserFailedByFutureBooking() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "5")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"text\":\"Addcommentfromuser5\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"text\":\"Add comment from user 5\"}"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(108)
-    public void Bookinggetallforuser1byCURRENTstate108() throws Exception {
+    public void bookingGetAllForUserByCurrentState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "CURRENT")
@@ -901,7 +901,7 @@ public class IntegrationTests {
 
     @Test
     @Order(109)
-    public void Bookinggetallforuser4ownerbyCURRENTstate109() throws Exception {
+    public void bookingGetAllForUserOwnerByCurrentState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "CURRENT")
@@ -911,7 +911,7 @@ public class IntegrationTests {
 
     @Test
     @Order(110)
-    public void Bookinggetallforuser1byPASTstate110() throws Exception {
+    public void bookingGetAllForUserByPastState() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("state", "PAST")
@@ -921,7 +921,7 @@ public class IntegrationTests {
 
     @Test
     @Order(111)
-    public void Bookinggetallforuser4ownerbyPASTstate111() throws Exception {
+    public void bookingGetAllForUserOwnerByPastState() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "4")
                         .param("state", "PAST")
@@ -931,7 +931,7 @@ public class IntegrationTests {
 
     @Test
     @Order(112)
-    public void Item4getbyuser6ownerwithoutcomments112() throws Exception {
+    public void itemGetByUserOwnerWithoutComments() throws Exception {
         mockMvc.perform(get("/items/4")
                         .header("X-Sharer-User-Id", "6")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -940,7 +940,7 @@ public class IntegrationTests {
 
     @Test
     @Order(113)
-    public void Additemrequestwithwronguser113() throws Exception {
+    public void addItemRequestWithWrongUser() throws Exception {
         mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", "99")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"description\":\"Хотелбывоспользоватьсящёткойдляобуви\"}"))
@@ -949,7 +949,7 @@ public class IntegrationTests {
 
     @Test
     @Order(114)
-    public void Additemrequestwithemptydescription114() throws Exception {
+    public void addItemRequestWithEmptyDescription() throws Exception {
         mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"description\":null}"))
@@ -958,7 +958,7 @@ public class IntegrationTests {
 
     @Test
     @Order(115)
-    public void Requestsgetownbywronguserid115() throws Exception {
+    public void requestsGetOwnByWrongUserId() throws Exception {
         mockMvc.perform(get("/requests/")
                         .header("X-Sharer-User-Id", "99")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -967,7 +967,7 @@ public class IntegrationTests {
 
     @Test
     @Order(116)
-    public void Requestsgetownbyuseridwithoutrequests116() throws Exception {
+    public void requestsGetOwnByUserIdWithoutRequests() throws Exception {
         mockMvc.perform(get("/requests/")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -976,7 +976,7 @@ public class IntegrationTests {
 
     @Test
     @Order(117)
-    public void Requestsgetallwithoutpaginationparams117() throws Exception {
+    public void requestsGetAllWithoutPaginationParams() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -985,7 +985,7 @@ public class IntegrationTests {
 
     @Test
     @Order(118)
-    public void Requestsgetallwithfrom0size0118() throws Exception {
+    public void requestsGetAllWithFromEmptySize() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -996,7 +996,7 @@ public class IntegrationTests {
 
     @Test
     @Order(119)
-    public void Requestsgetallwithfrom1size20119() throws Exception {
+    public void requestsGetAllWithFromSizeAnother() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "-1")
@@ -1007,7 +1007,7 @@ public class IntegrationTests {
 
     @Test
     @Order(120)
-    public void Requestsgetallwithfrom0size1120() throws Exception {
+    public void requestsGetAllWithFromSize() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1018,7 +1018,7 @@ public class IntegrationTests {
 
     @Test
     @Order(121)
-    public void Requestsgetallwithfrom0size20whenempty121() throws Exception {
+    public void requestsGetAllWithFromSizeWhenEmpty() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1029,7 +1029,7 @@ public class IntegrationTests {
 
     @Test
     @Order(122)
-    public void Additemrequest1122() throws Exception {
+    public void addItemRequest() throws Exception {
         mockMvc.perform(post("/requests")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"description\":\"Хотелбывоспользоватьсящёткойдляобуви\"}"))
@@ -1038,7 +1038,7 @@ public class IntegrationTests {
 
     @Test
     @Order(123)
-    public void Requestsgetownbyuseridwithrequestsemptyitems123() throws Exception {
+    public void requestsGetOwnByUserIdWithRequestsEmptyItems() throws Exception {
         mockMvc.perform(get("/requests/")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1047,7 +1047,7 @@ public class IntegrationTests {
 
     @Test
     @Order(124)
-    public void Additem5torequest1fromuser4124() throws Exception {
+    public void addItemToRequestFromUser() throws Exception {
         mockMvc.perform(post("/items")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON).content("{\"name\":\"Щёткадляобуви\",\"description\":\"Стандартнаящёткадляобуви\",\"available\":true,\"requestId\":1}"))
@@ -1056,7 +1056,7 @@ public class IntegrationTests {
 
     @Test
     @Order(125)
-    public void Requestsgetownbyuseridwithrequests125() throws Exception {
+    public void requestsGetOwnByUserIdWithRequests() throws Exception {
         mockMvc.perform(get("/requests/")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1065,7 +1065,7 @@ public class IntegrationTests {
 
     @Test
     @Order(126)
-    public void Requestsgetallwithfrom0size20forrequestowner126() throws Exception {
+    public void requestsGetAllWithFromSizeForRequestOwner() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1076,7 +1076,7 @@ public class IntegrationTests {
 
     @Test
     @Order(127)
-    public void Requestsgetallwithfrom0size20forotheruser127() throws Exception {
+    public void requestsGetAllWithFromSizeForOtherUser() throws Exception {
         mockMvc.perform(get("/requests/all")
                         .header("X-Sharer-User-Id", "4")
                         .param("from", "0")
@@ -1087,7 +1087,7 @@ public class IntegrationTests {
 
     @Test
     @Order(128)
-    public void Requestsgetbyidforwronguser128() throws Exception {
+    public void requestsGetByIdForWrongUser() throws Exception {
         mockMvc.perform(get("/requests/1")
                         .header("X-Sharer-User-Id", "99")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1096,7 +1096,7 @@ public class IntegrationTests {
 
     @Test
     @Order(129)
-    public void Requestsgetbywrongid129() throws Exception {
+    public void requestsGetByWrongId() throws Exception {
         mockMvc.perform(get("/requests/99")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1105,7 +1105,7 @@ public class IntegrationTests {
 
     @Test
     @Order(130)
-    public void Requestsgetbyidforotheruser130() throws Exception {
+    public void requestsGetByIdForOtherUser() throws Exception {
         mockMvc.perform(get("/requests/1")
                         .header("X-Sharer-User-Id", "4")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1114,7 +1114,7 @@ public class IntegrationTests {
 
     @Test
     @Order(131)
-    public void Requestsgetbyid131() throws Exception {
+    public void requestsGetById() throws Exception {
         mockMvc.perform(get("/requests/1")
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -1123,7 +1123,7 @@ public class IntegrationTests {
 
     @Test
     @Order(132)
-    public void Bookingsgetallwithfrom0size0132() throws Exception {
+    public void bookingsGetAllWithSize() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1134,7 +1134,7 @@ public class IntegrationTests {
 
     @Test
     @Order(133)
-    public void Bookingsownergetallwithfrom0size0133() throws Exception {
+    public void bookingsOwnerGetAllWithFromSize() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1145,7 +1145,7 @@ public class IntegrationTests {
 
     @Test
     @Order(134)
-    public void Bookingsgetallwithfrom1size20134() throws Exception {
+    public void bookingsGetAllWithFromSizeAnother() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "-1")
@@ -1156,7 +1156,7 @@ public class IntegrationTests {
 
     @Test
     @Order(135)
-    public void Bookingsownergetallwithfrom1size20135() throws Exception {
+    public void bookingsOwnerFetAllWithFromSize() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "-1")
@@ -1167,7 +1167,7 @@ public class IntegrationTests {
 
     @Test
     @Order(136)
-    public void Bookingsgetallwithfrom0size1136() throws Exception {
+    public void bookingsGetAllWithFromSize() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1178,7 +1178,7 @@ public class IntegrationTests {
 
     @Test
     @Order(137)
-    public void Bookingsownergetallwithfrom0size1137() throws Exception {
+    public void bookingsAnotherOwnerGetAllWithFromSize() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "0")
@@ -1189,7 +1189,7 @@ public class IntegrationTests {
 
     @Test
     @Order(138)
-    public void Bookingsgetallwithfrom4size2whenall5138() throws Exception {
+    public void bookingsGetAnotherAllWithFromSize() throws Exception {
         mockMvc.perform(get("/bookings/")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "4")
@@ -1200,7 +1200,7 @@ public class IntegrationTests {
 
     @Test
     @Order(139)
-    public void Bookingsownergetallwithfrom1size1whenall2139() throws Exception {
+    public void bookingsOwnerGetAllWithFromSizeWhenAll() throws Exception {
         mockMvc.perform(get("/bookings/owner")
                         .header("X-Sharer-User-Id", "1")
                         .param("from", "1")
@@ -1208,9 +1208,4 @@ public class IntegrationTests {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
-
-
-
-
 }
