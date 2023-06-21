@@ -27,8 +27,8 @@ public class ItemRequestMapper {
 
     public ItemRequestDto toDto(ItemRequest itemRequest) {
         List<ItemDto> itemDtos = itemMapper.toDto(itemRepository.findItemsByItemRequest_Id(itemRequest.getId()));
-        return new ItemRequestDto(itemRequest.getId(), itemRequest.getRequestor().getId(), itemRequest.getDescription(),
-                itemRequest.getCreated(), itemDtos);
+        return ItemRequestDto.builder().id(itemRequest.getId()).requestorId(itemRequest.getRequestor().getId())
+                .description(itemRequest.getDescription()).created(itemRequest.getCreated()).items(itemDtos).build();
     }
 
     public List<ItemRequestDto> toDtos(List<ItemRequest> itemRequest) {
@@ -37,6 +37,7 @@ public class ItemRequestMapper {
 
     public ItemRequest toItemRequest(ItemRequestDto itemRequestDto) {
         User user = userService.getUserById(itemRequestDto.getRequestorId());
-        return new ItemRequest(itemRequestDto.getId(), itemRequestDto.getDescription(), user, LocalDateTime.now());
+        return ItemRequest.builder().id(itemRequestDto.getId()).description(itemRequestDto.getDescription())
+                .requestor(user).created(LocalDateTime.now()).build();
     }
 }
