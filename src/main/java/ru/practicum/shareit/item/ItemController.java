@@ -15,7 +15,6 @@ import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,13 +52,12 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDto> getItems(@RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return itemService.getItems(ownerId).stream()
-                .map(itemMapper::toDtoWithLastAndNextBooking).collect(Collectors.toList());
+        return itemMapper.toDto(itemService.getItems(ownerId));
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestParam String text) {
-        return itemService.searchItems(text).stream().map(itemMapper::toDto).collect(Collectors.toList());
+        return itemMapper.toDto(itemService.searchItems(text));
     }
 
     @PostMapping("/{itemId}/comment")

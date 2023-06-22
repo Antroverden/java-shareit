@@ -11,7 +11,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,7 +40,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getUsers() {
-        return userService.getUsers().stream().map(userMapper::toDto).collect(Collectors.toList());
+        return userMapper.toDto(userService.getUsers());
     }
 
     @DeleteMapping("/{userId}")

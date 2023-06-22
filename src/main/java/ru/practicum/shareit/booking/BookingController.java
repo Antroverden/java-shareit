@@ -4,17 +4,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingWithIdsFullDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingWithIdsFullDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
-import java.util.Collection;
+import javax.validation.constraints.Min;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.model.Status.APPROVED;
 import static ru.practicum.shareit.booking.model.Status.REJECTED;
@@ -23,6 +22,7 @@ import static ru.practicum.shareit.booking.model.Status.REJECTED;
 @RequiredArgsConstructor
 @RequestMapping(path = "/bookings")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Validated
 public class BookingController {
 
     BookingService bookingService;
@@ -44,7 +44,7 @@ public class BookingController {
         bookingWithIdsFullDto.setBookerId(bookerId);
         if (approved) bookingWithIdsFullDto.setStatus(APPROVED);
         else bookingWithIdsFullDto.setStatus(REJECTED);
-        return bookingMapper.toDto(bookingService.update((bookingMapper.toBooking(bookingWithIdsFullDto))));
+        return bookingMapper.toDto(bookingService.update(bookingMapper.toBooking(bookingWithIdsFullDto)));
     }
 
     @GetMapping("/{bookingId}")
@@ -53,18 +53,26 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<BookingDto> getBookingInfo(
+    public List<BookingDto> getBookings(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader("X-Sharer-User-Id") int bookerId) {
-        return Optional.ofNullable(bookingService.getAll(bookerId, state, false))
-                .stream().flatMap(Collection::stream).map(bookingMapper::toDto).collect(Collectors.toList());
+            @RequestHeader("X-Sharer-User-Id") int bookerId,
+            @RequestParam(value = "from", required = false)
+            @Min(value = 0) Integer from,
+            @RequestParam(value = "size", required = false)
+            @Min(value = 1) Integer size) {
+        return bookingMapper.toDto(bookingService.getAll(bookerId, state, false, from, size));
     }
 
     @GetMapping("/owner")
-    public List<BookingDto> getBookingInfoOfItems(
+    public List<BookingDto> getBookingsWithInfoOfItems(
             @RequestParam(required = false, defaultValue = "ALL") String state,
-            @RequestHeader("X-Sharer-User-Id") int ownerId) {
-        return Optional.ofNullable(bookingService.getAll(ownerId, state, true))
-                .stream().flatMap(Collection::stream).map(bookingMapper::toDto).collect(Collectors.toList());
+            @RequestHeader("X-Sharer-User-Id") int ownerId,
+            @RequestParam(value = "from", required = false)
+            @Min(value = 0) Integer from,
+            @RequestParam(value = "size", required = false)
+            @Min(value = 1) Integer size) {
+        return bookingMapper.toDto(bookingService.getAll(ownerId, state, true, from, size));
     }
 }
+
+

@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
         try {
             return userRepository.save(user);
         } catch (DataAccessException e) {
-            throw new ConflictException("Юзер с имейлом " + user.getEmail() + "уже существует");
+            throw new ConflictException("Юзер с имейлом " + user.getEmail() + " уже существует");
         }
     }
 
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() != null) {
             userFromDB.setEmail(user.getEmail());
         }
-        return userRepository.save(userFromDB);
+        return addUser(userFromDB);
     }
 
     @Override

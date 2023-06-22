@@ -76,7 +76,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> searchItems(String text) {
         if (text.isBlank()) return List.of();
-        return itemRepository.search(text);
+        return itemRepository
+                .findItemsByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCaseAndAvailableIsTrue(text, text);
     }
 
     @Override
