@@ -4,21 +4,17 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@Validated
 public class ItemRequestController {
 
     ItemRequestServiceImpl itemRequestService;
@@ -26,7 +22,7 @@ public class ItemRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemRequestDto addItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+    public ItemRequestDto addItemRequest(@RequestBody ItemRequestDto itemRequestDto,
                                          @RequestHeader("X-Sharer-User-Id") int userId) {
         itemRequestDto.setRequestorId(userId);
         return itemRequestMapper.toDto(itemRequestService.addItemRequest(itemRequestMapper
@@ -41,9 +37,9 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<ItemRequestDto> getItemRequests(@RequestHeader("X-Sharer-User-Id") int userId,
                                                 @RequestParam(value = "from", required = false)
-                                                @Min(value = 0) Integer from,
+                                                Integer from,
                                                 @RequestParam(value = "size", required = false)
-                                                @Min(value = 1) Integer size) {
+                                                Integer size) {
         return itemRequestMapper.toDtos(itemRequestService.getItemRequests(userId, from, size));
     }
 

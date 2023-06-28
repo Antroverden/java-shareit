@@ -11,6 +11,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -44,8 +45,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Object> searchItems(@RequestParam String text) {
-        return itemClient.searchItems(text);
+    public ResponseEntity<Object> searchItems(@RequestHeader("X-Sharer-User-Id") int userId, @RequestParam String text) {
+        if (text.isBlank()) return ResponseEntity.ok(List.of());
+        return itemClient.searchItems(text, userId);
     }
 
     @PostMapping("/{itemId}/comment")
