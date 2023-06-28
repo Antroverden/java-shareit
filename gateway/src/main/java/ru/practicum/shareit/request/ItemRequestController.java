@@ -40,7 +40,10 @@ public class ItemRequestController {
                                                   @Min(value = 0) Integer from,
                                                   @RequestParam(value = "size", required = false)
                                                   @Min(value = 1) Integer size) {
-        return itemRequestClient.getItemRequests(userId, from, size);
+        if (from != null && size != null) {
+            return itemRequestClient.getItemRequestsWithPagination(userId, from, size);
+        }
+        return itemRequestClient.getItemRequests(userId);
     }
 
     @GetMapping("/{requestId}")

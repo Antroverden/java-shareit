@@ -34,12 +34,16 @@ public class ItemRequestClient extends BaseClient {
         return get("", userId);
     }
 
-    public ResponseEntity<Object> getItemRequests(long userId, Integer from, Integer size) {
+    public ResponseEntity<Object> getItemRequestsWithPagination(long userId, Integer from, Integer size) {
         Map<String, Object> parameters = Map.of(
                 "from", from,
                 "size", size
         );
         return get("/all?from={from}&size={size}", userId, parameters);
+    }
+
+    public ResponseEntity<Object> getItemRequests(long userId) {
+        return get("/all", userId);
     }
 
     public ResponseEntity<Object> getItemRequestById(int requestId, long userId) {
