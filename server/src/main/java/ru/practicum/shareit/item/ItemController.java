@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,13 +27,13 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto addItemToUser(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int ownerId) {
+    public ItemDto addItemToUser(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") int ownerId) {
         itemDto.setOwnerId(ownerId);
         return itemMapper.toDto(itemService.addItemToUser(itemMapper.toItem(itemDto)));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto updateItem(@Valid @PathVariable int itemId, @RequestBody ItemDto itemDto,
+    public ItemDto updateItem(@PathVariable int itemId, @RequestBody ItemDto itemDto,
                               @RequestHeader("X-Sharer-User-Id") int ownerId) {
         itemDto.setId(itemId);
         itemDto.setOwnerId(ownerId);
@@ -61,7 +60,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDtoWithName addCommentToItem(@Valid @RequestBody CommentDto commentDto, @PathVariable int itemId,
+    public CommentDtoWithName addCommentToItem(@RequestBody CommentDto commentDto, @PathVariable int itemId,
                                                @RequestHeader("X-Sharer-User-Id") int userId) {
         commentDto.setItemId(itemId);
         commentDto.setAuthorId(userId);

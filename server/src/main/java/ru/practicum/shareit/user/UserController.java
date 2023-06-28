@@ -9,7 +9,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -23,7 +22,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
+    public UserDto addUser(@RequestBody UserDto userDto) {
         return userMapper.toDto(userService.addUser(userMapper.toUser(userDto)));
     }
 

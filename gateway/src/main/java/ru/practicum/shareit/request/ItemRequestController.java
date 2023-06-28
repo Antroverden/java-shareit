@@ -4,52 +4,48 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.request.mapper.ItemRequestMapper;
-import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Validated
 public class ItemRequestController {
 
-    ItemRequestServiceImpl itemRequestService;
-    ItemRequestMapper itemRequestMapper;
+    ItemRequestClient itemRequestClient;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemRequestDto addItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
-                                         @RequestHeader("X-Sharer-User-Id") int userId) {
-        itemRequestDto.setRequestorId(userId);
-        return itemRequestMapper.toDto(itemRequestService.addItemRequest(itemRequestMapper
-                .toItemRequest(itemRequestDto)));
+    public ResponseEntity<Object> addItemRequest(@Valid @RequestBody ItemRequestDto itemRequestDto,
+                                                 @RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemRequestClient.addItemRequest(itemRequestDto, userId);
     }
 
     @GetMapping
-    public List<ItemRequestDto> getItemRequestsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemRequestMapper.toDtos(itemRequestService.getItemRequestsForUser(userId));
+    public ResponseEntity<Object> getItemRequestsForUser(@RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemRequestClient.getItemRequestsForUser(userId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getItemRequests(@RequestHeader("X-Sharer-User-Id") int userId,
-                                                @RequestParam(value = "from", required = false)
-                                                @Min(value = 0) Integer from,
-                                                @RequestParam(value = "size", required = false)
-                                                @Min(value = 1) Integer size) {
-        return itemRequestMapper.toDtos(itemRequestService.getItemRequests(userId, from, size));
+    public ResponseEntity<Object> getItemRequests(@RequestHeader("X-Sharer-User-Id") int userId,
+                                                  @RequestParam(value = "from", required = false)
+                                                  @Min(value = 0) Integer from,
+                                                  @RequestParam(value = "size", required = false)
+                                                  @Min(value = 1) Integer size) {
+        return itemRequestClient.getItemRequests(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto getItemRequestById(@PathVariable int requestId,
-                                             @RequestHeader("X-Sharer-User-Id") int userId) {
-        return itemRequestMapper.toDto(itemRequestService.getItemRequestById(requestId, userId));
+    public ResponseEntity<Object> getItemRequestById(@PathVariable int requestId,
+                                                     @RequestHeader("X-Sharer-User-Id") int userId) {
+        return itemRequestClient.getItemRequestById(requestId, userId);
     }
 }

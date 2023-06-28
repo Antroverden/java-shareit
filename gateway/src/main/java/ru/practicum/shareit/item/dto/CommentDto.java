@@ -1,15 +1,19 @@
-package ru.practicum.shareit.user.dto;
+package ru.practicum.shareit.item.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-@Data
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserDto {
+public class CommentDto {
     Integer id;
-    String name;
-    String email;
+    String text;
+    Integer itemId;
+    Integer authorId;
+    LocalDateTime created;
 }
