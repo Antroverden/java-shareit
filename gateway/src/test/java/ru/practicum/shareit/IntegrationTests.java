@@ -402,7 +402,7 @@ public class IntegrationTests {
     public void bookingCreateFromUserToItemUnavailable() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-22T11:22:50\",\"end\":\"2023-07-23T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -420,7 +420,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByWrongUserId() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "100")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-25T11:22:50\",\"end\":\"2023-07-26T11:22:50\"}"))
                 .andExpect(status().isNotFound());
     }
 
@@ -429,7 +429,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByNotFoundItemId() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":200,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":200,\"start\":\"2023-07-22T11:22:50\",\"end\":\"2023-07-23T11:22:50\"}"))
                 .andExpect(status().isNotFound());
     }
 
@@ -438,7 +438,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByEndInPast() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-20T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-22T11:22:50\",\"end\":\"2023-07-20T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -447,7 +447,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByEndBeforeStart() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-22T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-23T11:22:50\",\"end\":\"2023-07-22T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -456,7 +456,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByStartEqualEnd() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-23T11:22:50\",\"end\":\"2023-07-23T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -465,7 +465,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByStartEqualNull() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":null,\"end\":\"2023-06-22T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":null,\"end\":\"2023-07-22T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -474,7 +474,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByEndEqualNull() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-20T11:22:50\",\"end\":null}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-20T11:22:50\",\"end\":null}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -483,7 +483,7 @@ public class IntegrationTests {
     public void bookingCreateFailedByStartInPast() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-20T11:22:50\",\"end\":\"2023-06-22T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-20T11:22:50\",\"end\":\"2023-07-22T11:22:50\"}"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -492,7 +492,7 @@ public class IntegrationTests {
     public void bookingCreateFromAnotherUserToItemCurrent() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-24T11:22:50\",\"end\":\"2023-06-25T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-24T11:22:50\",\"end\":\"2023-07-25T11:22:50\"}"))
                 .andExpect(status().isCreated());
     }
 
@@ -511,7 +511,7 @@ public class IntegrationTests {
     public void bookingCreateFromUserToItem() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-22T11:22:50\",\"end\":\"2023-07-23T11:22:50\"}"))
                 .andExpect(status().isCreated());
     }
 
@@ -707,7 +707,7 @@ public class IntegrationTests {
     public void bookingCreateFromUserToItemFailed() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":1,\"start\":\"2023-06-23T11:22:50\",\"end\":\"2023-06-24T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":1,\"start\":\"2023-07-23T11:22:50\",\"end\":\"2023-07-24T11:22:50\"}"))
                 .andExpect(status().isNotFound());
     }
 
@@ -716,7 +716,7 @@ public class IntegrationTests {
     public void bookingCreateFromUserToAnotherItem() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "5")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-22T11:22:50\",\"end\":\"2023-06-23T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-22T11:22:50\",\"end\":\"2023-07-23T11:22:50\"}"))
                 .andExpect(status().isCreated());
     }
 
@@ -782,7 +782,7 @@ public class IntegrationTests {
     public void bookingCreateFromUserToItemCurrent() throws Exception {
         mockMvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-06-24T11:22:50\",\"end\":\"2023-06-25T11:22:50\"}"))
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"itemId\":2,\"start\":\"2023-07-24T11:22:50\",\"end\":\"2023-07-25T11:22:50\"}"))
                 .andExpect(status().isCreated());
     }
 

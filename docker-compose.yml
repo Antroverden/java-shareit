@@ -1,27 +1,29 @@
 version: '3.8'
 services:
   gateway:
-    build:
-    image:
+    build: gateway
+    image: shareit-server.url=http://localhost:9090
     container_name:
     ports:
       - "8080:8080"
     depends_on:
+    - server
     environment:
       - SHAREIT_SERVER_URL=http://server:9090
 
   server:
-    build:
+    build: server
     image:
     container_name:
     ports:
       - "9090:9090"
     depends_on:
+    - db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/shareit
 
   db:
-    image:
+    image: 
     container_name:
     ports:
       - "6541:5432"
