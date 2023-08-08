@@ -31,5 +31,5 @@ http://localhost:8080
 ## Shareit API ⚙️:
 Примеры HTTP-запросов к контроллерам при запущенном приложении можно увидеть по ссылке:
 ```
-http://localhost:8080/swagger-ui/index.html
+http://localhost:9090/swagger-ui/index.html
 ```
