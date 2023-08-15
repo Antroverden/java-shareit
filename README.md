@@ -14,21 +14,14 @@ Shareit - приложение для краткосрочной аренды в
 ```
 git clone https://github.com/Antroverden/java-shareit.git
 ```
-2) Введите в консоли
+2) Запустите проект в Intellij IDEA или введите в консоли
 ```
-docker compose build
+mvn clean package
 ```
+3) Убедитесь, что у вас запущен Docker и введите в консоли
 ```
 docker compose up
 ```
-3) Перейдите по адресу
-```
-http://localhost:8080
-```
-4) Можно работать с проектом
-
-
-## Shareit API ⚙️:
 Примеры HTTP-запросов к контроллерам при запущенном приложении можно увидеть по ссылке:
 ```
 http://localhost:9090/swagger-ui/index.html
